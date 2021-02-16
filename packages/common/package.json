@@ -1,0 +1,16 @@
+{
+  "name": "@contest-pug/common",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.13",
+    "@types/yup": "^0.29.10",
+    "typescript": "^4.1.3"
+  }
+}

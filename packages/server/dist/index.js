@@ -36,25 +36,24 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use(helmet_1.default());
     app.use(passport_1.default.initialize());
     passport_1.default.serializeUser((user, done) => done(null, user.accessToken));
-    passport_1.default.use(new passport_google_oauth20_1.Strategy({
+    const strategy = new passport_google_oauth20_1.Strategy({
         clientID: process.env.GOOGLE_CONSUMER_KEY,
         clientSecret: process.env.GOOGLE_CONSUMER_SECRET,
         callbackURL: "http://localhost:4000/auth/google/callback",
-    }, (googleAccessToken, __, profile, cb) => __awaiter(void 0, void 0, void 0, function* () {
+    }, (googleAccessToken, googleRefreshToken, profile, cb) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         console.log(profile);
         try {
             let user = yield User_1.User.findOne({ where: { googleId: profile.id } });
             const data = {
                 googleAccessToken,
+                googleRefreshToken,
                 googleId: profile.id,
                 profilePicture: ((_a = profile.photos) === null || _a === void 0 ? void 0 : _a[0].value) ||
                     profile._json.avatar_url ||
                     "",
                 other: profile._json,
-                username: profile.name
-                    ? Object.values(profile.name).join(" ")
-                    : null,
+                username: profile.name ? Object.values(profile.name).join(" ") : null,
             };
             if (user) {
                 yield User_1.User.update(user.id, data);
@@ -67,13 +66,17 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         catch (err) {
             cb(new Error("Internal Error"));
         }
-    })));
+    }));
+    passport_1.default.use(strategy);
     app.get("/auth/google", passport_1.default.authenticate("google", {
         scope: ["profile", "email"],
         session: false,
     }));
-    app.get("/auth/google/callback", passport_1.default.authenticate("google", { failureRedirect: "", session: false }), (_req, res) => {
-        res.send("logged in successfully");
+    app.get("/auth/google/callback", passport_1.default.authenticate("google", { failureRedirect: "", session: false }), (req, res) => {
+        if (!req.user.accessToken || !req.user.refreshToken) {
+            res.send("Internal error while logging in");
+        }
+        res.redirect(`http://localhost:3000/auth/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`);
     });
     if (!constants_1.__prod__) {
         app.get("/users", (_req, res) => __awaiter(void 0, void 0, void 0, function* () { return res.json(yield User_1.User.find({})); }));

@@ -34,6 +34,10 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "googleAccessToken", void 0);
 __decorate([
+    typeorm_1.Column("text", { nullable: true }),
+    __metadata("design:type", Object)
+], User.prototype, "googleRefreshToken", void 0);
+__decorate([
     typeorm_1.Column("jsonb", { nullable: true }),
     __metadata("design:type", Object)
 ], User.prototype, "other", void 0);

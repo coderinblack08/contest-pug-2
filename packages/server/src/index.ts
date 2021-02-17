@@ -17,6 +17,7 @@ const main = async () => {
     migrations: [join(__dirname, "./migrations/*")],
     logging: !__prod__,
     synchronize: !__prod__,
+    // dropSchema: true
   });
 
   await conn.runMigrations();
@@ -28,42 +29,41 @@ const main = async () => {
 
   passport.serializeUser((user: any, done) => done(null, user.accessToken));
 
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CONSUMER_KEY,
-        clientSecret: process.env.GOOGLE_CONSUMER_SECRET,
-        callbackURL: "http://localhost:4000/auth/google/callback",
-      },
-      async (googleAccessToken, __, profile, cb) => {
-        console.log(profile);
-        try {
-          let user = await User.findOne({ where: { googleId: profile.id } });
-          const data: Partial<User> = {
-            googleAccessToken,
-            googleId: profile.id,
-            profilePicture:
-              profile.photos?.[0].value ||
-              (profile._json as any).avatar_url ||
-              "",
-            other: profile._json,
-            // profileURL: profile.profileUrl,
-            username: profile.name
-              ? Object.values(profile.name).join(" ")
-              : null, // TODO: Given name backup + Something other than null
-          };
-          if (user) {
-            await User.update(user.id, data);
-          } else {
-            user = await User.create(data).save();
-          }
-          cb(undefined, createTokens(user));
-        } catch (err) {
-          cb(new Error("Internal Error"));
+  const strategy = new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CONSUMER_KEY,
+      clientSecret: process.env.GOOGLE_CONSUMER_SECRET,
+      callbackURL: "http://localhost:4000/auth/google/callback",
+    },
+    async (googleAccessToken, googleRefreshToken, profile, cb) => {
+      console.log(profile);
+      try {
+        let user = await User.findOne({ where: { googleId: profile.id } });
+        const data: Partial<User> = {
+          googleAccessToken, // 1 hour expiration
+          googleRefreshToken,
+          googleId: profile.id,
+          profilePicture:
+            profile.photos?.[0].value ||
+            (profile._json as any).avatar_url ||
+            "",
+          other: profile._json,
+          // profileURL: profile.profileUrl,
+          username: profile.name ? Object.values(profile.name).join(" ") : null, // TODO: Given name backup + Something other than null
+        };
+        if (user) {
+          await User.update(user.id, data);
+        } else {
+          user = await User.create(data).save();
         }
+        cb(undefined, createTokens(user));
+      } catch (err) {
+        cb(new Error("Internal Error"));
       }
-    )
+    }
   );
+
+  passport.use(strategy);
 
   app.get(
     "/auth/google",
@@ -76,8 +76,13 @@ const main = async () => {
   app.get(
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "", session: false }), // TODO: Add failure redirect
-    (_req, res) => {
-      res.send("logged in successfully");
+    (req: any, res) => {
+      if (!req.user.accessToken || !req.user.refreshToken) {
+        res.send("Internal error while logging in");
+      }
+      res.redirect(
+        `http://localhost:3000/auth/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`
+      );
     }
   );
 

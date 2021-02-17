@@ -22,6 +22,9 @@ export class User extends BaseEntity {
   @Column("text", { nullable: true })
   googleAccessToken: string | null;
 
+  @Column("text", { nullable: true })
+  googleRefreshToken: string | null;
+
   @Column("jsonb", { nullable: true })
   other: any;
 

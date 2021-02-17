@@ -20,6 +20,7 @@ export const createTokens = (
       expiresIn: "14d",
     }
   );
+
   const accessToken = sign(
     { userId: user.id },
     process.env.ACCESS_TOKEN_SECRET,

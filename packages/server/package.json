@@ -8,6 +8,7 @@
     "start": "node dist/index.ts"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
     "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^8.5.0",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@types/http-errors": "^1.8.0",
+    "cors": "^2.8.5",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
@@ -28,6 +30,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.31"
+    "typeorm": "^0.2.31",
+    "zustand": "^3.3.2"
   }
 }

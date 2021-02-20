@@ -1,12 +1,14 @@
 import express from "express";
 import helmet from "helmet";
 import { join } from "path";
-import { createConnection } from "typeorm";
+import { createConnection, getCustomRepository } from "typeorm";
 import { port, __prod__ } from "./constants";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { createTokens } from "./utils/createTokens";
 import { User } from "./entities/User";
+import cors from "cors";
+import { isAuth } from "./utils/isAuth";
 require("dotenv-safe").config();
 
 const main = async () => {
@@ -25,6 +27,19 @@ const main = async () => {
   const app = express();
   // app.set("trust proxy", 1);
   app.use(helmet());
+  app.use(
+    cors({
+      origin: "*", // https://localhost:3000
+      maxAge: __prod__ ? 86400 : undefined,
+      exposedHeaders: [
+        "access-token",
+        "refresh-token",
+        "content-type",
+        "content-length",
+      ],
+      // credentials: true,
+    })
+  );
   app.use(passport.initialize());
 
   passport.serializeUser((user: any, done) => done(null, user.accessToken));
@@ -81,14 +96,24 @@ const main = async () => {
         res.send("Internal error while logging in");
       }
       res.redirect(
-        `http://localhost:3000/auth/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`
+        `http://localhost:3000/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`
       );
     }
   );
 
   if (!__prod__) {
-    app.get("/users", async (_req, res) => res.json(await User.find({})));
+    app.get("/users", isAuth(), async (_req, res) =>
+      res.json(await User.find({}))
+    );
   }
+
+  // @ts-ignore
+  app.get("/me", isAuth(false), async (req: any, res) => {
+    if (!req.userId) {
+      return res.json({ user: null });
+    }
+    res.json({ user: await User.findOne(req.userId) });
+  });
 
   app.listen(port, () => console.log(`Listening on port ${port}`));
 };

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import { verify } from "jsonwebtoken";
 import { User } from "../entities/User";
@@ -8,14 +8,18 @@ import {
   RefreshTokenData,
 } from "./createTokens";
 
-export const isAuth = async (
-  res: Response,
-  req: Request,
-  next: NextFunction
+export const isAuth: (
+  shouldThrow?: boolean
+) => RequestHandler<{}, any, any, {}> = (shouldThrow = true) => async (
+  req,
+  res,
+  next
 ) => {
   const accessToken = req.headers["access-token"];
   if (typeof accessToken !== "string") {
-    return next(createHttpError(401, "Not authorized"));
+    return next(
+      !shouldThrow ? undefined : createHttpError(401, "Not authorized")
+    );
   }
 
   try {
@@ -28,7 +32,9 @@ export const isAuth = async (
 
   const refreshToken = req.headers["refresh-token"];
   if (typeof refreshToken !== "string") {
-    return next(createHttpError(401, "Not authorized"));
+    return next(
+      !shouldThrow ? undefined : createHttpError(401, "Not authorized")
+    );
   }
 
   let data;
@@ -36,19 +42,24 @@ export const isAuth = async (
     data = <RefreshTokenData>(
       verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     );
-  } catch {
-    return next(createHttpError(401, "Not authorized"));
+  } catch (err) {
+    return next(
+      !shouldThrow ? undefined : createHttpError(401, "Not authorized")
+    );
   }
 
   const user = await User.findOne(data.userId);
 
   if (!user || user.tokenVersion !== data.tokenVersion) {
-    return next(createHttpError(401, "Not authorized"));
+    return next(
+      !shouldThrow ? undefined : createHttpError(401, "Not authorized")
+    );
   }
 
   const { refreshToken: rt, accessToken: at } = createTokens(user);
   res.setHeader("refresh-token", rt); // TODO: maybe keep refresh-token the same if possible in future
   res.setHeader("access-token", at);
+  (res as any).userId = user.id;
 
   next();
 };

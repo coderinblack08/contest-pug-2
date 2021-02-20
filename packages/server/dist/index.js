@@ -21,6 +21,8 @@ const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
 const createTokens_1 = require("./utils/createTokens");
 const User_1 = require("./entities/User");
+const cors_1 = __importDefault(require("cors"));
+const isAuth_1 = require("./utils/isAuth");
 require("dotenv-safe").config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const conn = yield typeorm_1.createConnection({
@@ -34,6 +36,16 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield conn.runMigrations();
     const app = express_1.default();
     app.use(helmet_1.default());
+    app.use(cors_1.default({
+        origin: "*",
+        maxAge: constants_1.__prod__ ? 86400 : undefined,
+        exposedHeaders: [
+            "access-token",
+            "refresh-token",
+            "content-type",
+            "content-length",
+        ],
+    }));
     app.use(passport_1.default.initialize());
     passport_1.default.serializeUser((user, done) => done(null, user.accessToken));
     const strategy = new passport_google_oauth20_1.Strategy({
@@ -76,11 +88,17 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.user.accessToken || !req.user.refreshToken) {
             res.send("Internal error while logging in");
         }
-        res.redirect(`http://localhost:3000/auth/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`);
+        res.redirect(`http://localhost:3000/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`);
     });
     if (!constants_1.__prod__) {
-        app.get("/users", (_req, res) => __awaiter(void 0, void 0, void 0, function* () { return res.json(yield User_1.User.find({})); }));
+        app.get("/users", isAuth_1.isAuth(), (_req, res) => __awaiter(void 0, void 0, void 0, function* () { return res.json(yield User_1.User.find({})); }));
     }
+    app.get("/me", isAuth_1.isAuth(false), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!req.userId) {
+            return res.json({ user: null });
+        }
+        res.json({ user: yield User_1.User.findOne(req.userId) });
+    }));
     app.listen(constants_1.port, () => console.log(`Listening on port ${constants_1.port}`));
 });
 main();

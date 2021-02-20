@@ -17,10 +17,10 @@ const http_errors_1 = __importDefault(require("http-errors"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 const User_1 = require("../entities/User");
 const createTokens_1 = require("./createTokens");
-const isAuth = (res, req, next) => __awaiter(void 0, void 0, void 0, function* () {
+const isAuth = (shouldThrow = true) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = req.headers["access-token"];
     if (typeof accessToken !== "string") {
-        return next(http_errors_1.default(401, "Not authorized"));
+        return next(!shouldThrow ? undefined : http_errors_1.default(401, "Not authorized"));
     }
     try {
         const data = (jsonwebtoken_1.verify(accessToken, process.env.ACCESS_TOKEN_SECRET));
@@ -30,22 +30,23 @@ const isAuth = (res, req, next) => __awaiter(void 0, void 0, void 0, function* (
     catch (_a) { }
     const refreshToken = req.headers["refresh-token"];
     if (typeof refreshToken !== "string") {
-        return next(http_errors_1.default(401, "Not authorized"));
+        return next(!shouldThrow ? undefined : http_errors_1.default(401, "Not authorized"));
     }
     let data;
     try {
         data = (jsonwebtoken_1.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET));
     }
-    catch (_b) {
-        return next(http_errors_1.default(401, "Not authorized"));
+    catch (err) {
+        return next(!shouldThrow ? undefined : http_errors_1.default(401, "Not authorized"));
     }
     const user = yield User_1.User.findOne(data.userId);
     if (!user || user.tokenVersion !== data.tokenVersion) {
-        return next(http_errors_1.default(401, "Not authorized"));
+        return next(!shouldThrow ? undefined : http_errors_1.default(401, "Not authorized"));
     }
     const { refreshToken: rt, accessToken: at } = createTokens_1.createTokens(user);
     res.setHeader("refresh-token", rt);
     res.setHeader("access-token", at);
+    res.userId = user.id;
     next();
 });
 exports.isAuth = isAuth;

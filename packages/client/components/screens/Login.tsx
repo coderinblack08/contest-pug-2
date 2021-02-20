@@ -19,7 +19,7 @@ export const Login: React.FC = () => (
       <li>Game night fun</li>
       <li>And more 👀</li>
     </ul>
-    <Button href="http://localhost:4000/auth/google" className="w-full">
+    <Button href="http://localhost:4000/auth/google" className="w-full mt-8">
       Login with Google
     </Button>
     <footer className="mt-5 flex justify-center">

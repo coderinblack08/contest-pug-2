@@ -19,3 +19,31 @@ export interface User {
   tokenVersion: number;
   createdAt: string;
 }
+
+export interface FormikContest {
+  name: string;
+  website?: string;
+  email?: string;
+  description: string;
+  instruction?: string;
+  form: {
+    question: string;
+    type:
+      | "text"
+      | "number"
+      | "datetime"
+      | "date"
+      | "time"
+      | "checkbox"
+      | "telephone";
+    required: boolean;
+  }[];
+}
+
+export interface Contest extends FormikContest {
+  id: string;
+  competitors: number;
+  creatorId: string;
+  updatedAt: Date;
+  createdAt: Date;
+}

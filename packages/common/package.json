@@ -2,11 +2,13 @@
   "name": "@contest-pug/common",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
   "dependencies": {
-    "yup": "^0.32.8"
+    "@types/yup": "^0.29.11",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@types/node": "^14.14.13",

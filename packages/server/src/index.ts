@@ -1,13 +1,14 @@
+import cors from "cors";
 import express from "express";
 import helmet from "helmet";
-import { join } from "path";
-import { createConnection, getCustomRepository } from "typeorm";
-import { port, __prod__ } from "./constants";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { createTokens } from "./utils/createTokens";
+import { join } from "path";
+import { createConnection } from "typeorm";
+import contestRouter from "./api/contest";
+import { port, __prod__ } from "./constants";
 import { User } from "./entities/User";
-import cors from "cors";
+import { createTokens } from "./utils/createTokens";
 import { isAuth } from "./utils/isAuth";
 require("dotenv-safe").config();
 
@@ -40,7 +41,10 @@ const main = async () => {
       // credentials: true,
     })
   );
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(passport.initialize());
+  app.use("/contests", contestRouter);
 
   passport.serializeUser((user: any, done) => done(null, user.accessToken));
 
@@ -88,9 +92,18 @@ const main = async () => {
     })
   );
 
+  app.get("/auth/google/error", (_, res) =>
+    res.send(
+      `<!DOCTYPE html> <html> <body> <p>An error occurred while authenticating.</p> <a href="/auth/google">Try again</a>. </body> </html>`
+    )
+  );
+
   app.get(
     "/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "", session: false }), // TODO: Add failure redirect
+    passport.authenticate("google", {
+      failureRedirect: "/auth/google/error",
+      session: false,
+    }),
     (req: any, res) => {
       if (!req.user.accessToken || !req.user.refreshToken) {
         res.send("Internal error while logging in");
@@ -102,17 +115,15 @@ const main = async () => {
   );
 
   if (!__prod__) {
-    app.get("/users", isAuth(), async (_req, res) =>
-      res.json(await User.find({}))
-    );
+    app.get("/users", async (_req, res) => res.json(await User.find({})));
   }
 
   // @ts-ignore
   app.get("/me", isAuth(false), async (req: any, res) => {
     if (!req.userId) {
-      return res.json({ user: null });
+      return res.json(null);
     }
-    res.json({ user: await User.findOne(req.userId) });
+    res.json(await User.findOne(req.userId));
   });
 
   app.listen(port, () => console.log(`Listening on port ${port}`));

@@ -46,7 +46,7 @@ const isAuth = (shouldThrow = true) => (req, res, next) => __awaiter(void 0, voi
     const { refreshToken: rt, accessToken: at } = createTokens_1.createTokens(user);
     res.setHeader("refresh-token", rt);
     res.setHeader("access-token", at);
-    res.userId = user.id;
+    res.userId = data.userId;
     next();
 });
 exports.isAuth = isAuth;

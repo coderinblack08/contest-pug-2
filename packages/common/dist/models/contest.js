@@ -19,15 +19,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerSchema = exports.loginSchema = void 0;
+exports.contestSchema = void 0;
 const Yup = __importStar(require("yup"));
-exports.loginSchema = Yup.object().shape({
-    email: Yup.string().email().max(256),
-    password: Yup.string().min(8),
+exports.contestSchema = Yup.object({
+    name: Yup.string().min(2).max(25).required(),
+    website: Yup.string().url().max(255),
+    email: Yup.string().email().max(255),
+    description: Yup.string().min(20).max(10000).required(),
+    instruction: Yup.string().max(255),
+    form: Yup.array().of(Yup.object().shape({
+        question: Yup.string()
+            .max(200, "Label must be at most 25 characters")
+            .required("Label is a required field"),
+        type: Yup.string()
+            .oneOf([
+            "text",
+            "number",
+            "datetime",
+            "date",
+            "time",
+            "checkbox",
+            "telephone",
+        ])
+            .required(),
+        required: Yup.bool().required(),
+    })),
 });
-exports.registerSchema = Yup.object().shape({
-    name: Yup.string().min(2).max(256),
-    email: Yup.string().email().max(256),
-    password: Yup.string().min(8),
-});
-//# sourceMappingURL=userSchema.js.map
+//# sourceMappingURL=contest.js.map

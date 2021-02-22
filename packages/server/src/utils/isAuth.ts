@@ -59,7 +59,8 @@ export const isAuth: (
   const { refreshToken: rt, accessToken: at } = createTokens(user);
   res.setHeader("refresh-token", rt); // TODO: maybe keep refresh-token the same if possible in future
   res.setHeader("access-token", at);
-  (res as any).userId = user.id;
+
+  (res as any).userId = data.userId;
 
   next();
 };

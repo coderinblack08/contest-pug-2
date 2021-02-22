@@ -3,8 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
+import { Contest } from "./Contest";
+import { Member } from "./Member";
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
@@ -31,6 +35,15 @@ export class User extends BaseEntity {
   @Column("int", { default: 1 })
   tokenVersion: number;
 
+  @OneToMany(() => Contest, (c) => c.creator)
+  contests: Promise<Contest[]>;
+
+  @OneToMany(() => Member, (m) => m.user)
+  joined: Promise<Member[]>;
+
+  @UpdateDateColumn({ type: "time with time zone" })
+  updatedAt: Date;
+
   @CreateDateColumn({ type: "time with time zone" })
-  createdAt: number;
+  createdAt: Date;
 }

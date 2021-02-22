@@ -9,62 +9,63 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Contest = void 0;
 const typeorm_1 = require("typeorm");
-const Contest_1 = require("./Contest");
 const Member_1 = require("./Member");
-let User = class User extends typeorm_1.BaseEntity {
+const User_1 = require("./User");
+let Contest = class Contest extends typeorm_1.BaseEntity {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn("uuid"),
-    __metadata("design:type", Number)
-], User.prototype, "id", void 0);
+    __metadata("design:type", String)
+], Contest.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column("text"),
     __metadata("design:type", String)
-], User.prototype, "profilePicture", void 0);
+], Contest.prototype, "name", void 0);
 __decorate([
-    typeorm_1.Column("text", { unique: true, nullable: true }),
+    typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", Object)
-], User.prototype, "username", void 0);
+], Contest.prototype, "email", void 0);
 __decorate([
-    typeorm_1.Column("text", { unique: true }),
+    typeorm_1.Column("text", { nullable: true }),
+    __metadata("design:type", Object)
+], Contest.prototype, "description", void 0);
+__decorate([
+    typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", String)
-], User.prototype, "googleId", void 0);
+], Contest.prototype, "instructions", void 0);
 __decorate([
-    typeorm_1.Column("text", { nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "googleAccessToken", void 0);
+    typeorm_1.Column("jsonb"),
+    __metadata("design:type", Array)
+], Contest.prototype, "form", void 0);
 __decorate([
-    typeorm_1.Column("text", { nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "googleRefreshToken", void 0);
-__decorate([
-    typeorm_1.Column("jsonb", { nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "other", void 0);
-__decorate([
-    typeorm_1.Column("int", { default: 1 }),
+    typeorm_1.Column("int", { default: 0 }),
     __metadata("design:type", Number)
-], User.prototype, "tokenVersion", void 0);
+], Contest.prototype, "competitors", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => Contest_1.Contest, (c) => c.creator),
-    __metadata("design:type", Promise)
-], User.prototype, "contests", void 0);
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], Contest.prototype, "creatorId", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => Member_1.Member, (m) => m.user),
+    typeorm_1.ManyToOne(() => User_1.User, (u) => u.contests, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn({ name: "creatorId" }),
     __metadata("design:type", Promise)
-], User.prototype, "joined", void 0);
+], Contest.prototype, "creator", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Member_1.Member, (m) => m.contest),
+    __metadata("design:type", Promise)
+], Contest.prototype, "members", void 0);
 __decorate([
     typeorm_1.UpdateDateColumn({ type: "time with time zone" }),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
+], Contest.prototype, "updatedAt", void 0);
 __decorate([
     typeorm_1.CreateDateColumn({ type: "time with time zone" }),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
-User = __decorate([
+], Contest.prototype, "createdAt", void 0);
+Contest = __decorate([
     typeorm_1.Entity()
-], User);
-exports.User = User;
-//# sourceMappingURL=User.js.map
+], Contest);
+exports.Contest = Contest;
+//# sourceMappingURL=Contest.js.map

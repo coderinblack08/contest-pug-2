@@ -14,7 +14,7 @@ export const useTokenStore = create<TokenState>(
         accessToken: "",
         refreshToken: "",
         setTokens: ({ accessToken, refreshToken }) =>
-          set({ accessToken, refreshToken }), // TODO: Set keys in cookie
+          set({ accessToken, refreshToken }),
       }),
       {
         name: "token-store",

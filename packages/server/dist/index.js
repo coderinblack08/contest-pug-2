@@ -12,16 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
-const path_1 = require("path");
-const typeorm_1 = require("typeorm");
-const constants_1 = require("./constants");
 const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
-const createTokens_1 = require("./utils/createTokens");
+const path_1 = require("path");
+const typeorm_1 = require("typeorm");
+const contest_1 = __importDefault(require("./api/contest"));
+const constants_1 = require("./constants");
 const User_1 = require("./entities/User");
-const cors_1 = __importDefault(require("cors"));
+const createTokens_1 = require("./utils/createTokens");
 const isAuth_1 = require("./utils/isAuth");
 require("dotenv-safe").config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,7 +47,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             "content-length",
         ],
     }));
+    app.use(express_1.default.json());
+    app.use(express_1.default.urlencoded({ extended: true }));
     app.use(passport_1.default.initialize());
+    app.use("/contests", contest_1.default);
     passport_1.default.serializeUser((user, done) => done(null, user.accessToken));
     const strategy = new passport_google_oauth20_1.Strategy({
         clientID: process.env.GOOGLE_CONSUMER_KEY,
@@ -84,20 +88,24 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         scope: ["profile", "email"],
         session: false,
     }));
-    app.get("/auth/google/callback", passport_1.default.authenticate("google", { failureRedirect: "", session: false }), (req, res) => {
+    app.get("/auth/google/error", (_, res) => res.send(`<!DOCTYPE html> <html> <body> <p>An error occurred while authenticating.</p> <a href="/auth/google">Try again</a>. </body> </html>`));
+    app.get("/auth/google/callback", passport_1.default.authenticate("google", {
+        failureRedirect: "/auth/google/error",
+        session: false,
+    }), (req, res) => {
         if (!req.user.accessToken || !req.user.refreshToken) {
             res.send("Internal error while logging in");
         }
         res.redirect(`http://localhost:3000/?accessToken=${req.user.accessToken}&refreshToken=${req.user.refreshToken}`);
     });
     if (!constants_1.__prod__) {
-        app.get("/users", isAuth_1.isAuth(), (_req, res) => __awaiter(void 0, void 0, void 0, function* () { return res.json(yield User_1.User.find({})); }));
+        app.get("/users", (_req, res) => __awaiter(void 0, void 0, void 0, function* () { return res.json(yield User_1.User.find({})); }));
     }
     app.get("/me", isAuth_1.isAuth(false), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.userId) {
-            return res.json({ user: null });
+            return res.json(null);
         }
-        res.json({ user: yield User_1.User.findOne(req.userId) });
+        res.json(yield User_1.User.findOne(req.userId));
     }));
     app.listen(constants_1.port, () => console.log(`Listening on port ${constants_1.port}`));
 });

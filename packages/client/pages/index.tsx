@@ -8,8 +8,8 @@ import { Contest, User } from "../types";
 import { shortenNumber } from "../utils/shortenNumber";
 
 const Dashboard: React.FC = () => {
-  const { data } = useQuery<Contest[]>("/contests");
-  const { data: me } = useQuery<User | null>("/me");
+  const { data } = useQuery<Contest[]>("/contests/joined");
+  const { data: me } = useQuery<User>("/me");
 
   return (
     <div>
@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
       <Layout>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {data?.map((contest) => (
-            <Link href="/" key={contest.id}>
+            <Link href={`/contest/${contest.id}`} key={contest.id}>
               <button className="select-text text-left focus:outline-none px-5 py-4 rounded-md bg-gray-800 border border-gray-700 shadow-md focus:ring">
                 {me?.id === contest.creatorId ? (
                   <p className="text-sm text-blue-400">Owner</p>

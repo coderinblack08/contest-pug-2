@@ -24,6 +24,9 @@ export class Contest extends BaseEntity {
   email: string | null;
 
   @Column("text", { nullable: true })
+  website: string | null;
+
+  @Column("text", { nullable: true })
   description: string | null;
 
   @Column("text", { nullable: true })

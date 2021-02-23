@@ -10,6 +10,7 @@ export const ImageWithSpinner: React.FC<
       <img
         {...props}
         onLoad={() => setLoading(false)}
+        onError={() => setLoading(true)}
         className={`${loading ? "hidden" : className}`}
       />
       {loading ? <Loading size={6} /> : null}

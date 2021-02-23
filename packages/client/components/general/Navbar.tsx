@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { useTokenStore } from "../../store/auth";
 import { User } from "../../types";
 import { ImageWithSpinner } from "./ImageWithSpinner";
+import ReactTooltip from "react-tooltip";
 
 const routes = {
   "/": "Home",
@@ -15,7 +16,8 @@ const routes = {
 
 export const Navbar: React.FC = ({}) => {
   const { route } = useRouter();
-  const { data: me } = useQuery<User | null>("/me");
+  const { data: me } = useQuery<User>("/me");
+  const queryClient = useQueryClient();
   const onRoute = (r: string) =>
     r === route.replace("http://localhost:3000", "");
 
@@ -35,10 +37,23 @@ export const Navbar: React.FC = ({}) => {
         <ul className="flex items-center space-x-3">
           <li>
             <Link href="/new">
-              <button className="inline-flex items-center justify-center w-9 h-9 focus:bg-gray-600 focus:ring focus:ring-gray-500 bg-gray-700 rounded focus:outline-none">
+              <button
+                className="inline-flex items-center justify-center w-9 h-9 focus:bg-gray-600 focus:ring focus:ring-gray-500 bg-gray-700 rounded focus:outline-none"
+                data-for="new"
+                data-tip
+              >
                 <PlusOutline size={26} />
               </button>
             </Link>
+            <ReactTooltip
+              id="new"
+              place="bottom"
+              type="dark"
+              effect="solid"
+              aria-haspopup
+            >
+              New Contest
+            </ReactTooltip>
           </li>
           <li>
             <button
@@ -47,11 +62,22 @@ export const Navbar: React.FC = ({}) => {
                 useTokenStore
                   .getState()
                   .setTokens({ accessToken: "", refreshToken: "" });
-                useQueryClient().setQueryData<User | null>("/me", null);
+                queryClient.setQueryData<User | null>("/me", null);
               }}
+              data-for="logout"
+              data-tip
             >
               <LogoutOutline size={20} />
             </button>
+            <ReactTooltip
+              id="logout"
+              place="bottom"
+              type="dark"
+              effect="solid"
+              aria-haspopup
+            >
+              Logout
+            </ReactTooltip>
           </li>
           <li>
             <Link href="/profile">

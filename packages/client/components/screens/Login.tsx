@@ -5,12 +5,13 @@ import { Button } from "../form/Button";
 const footer_links = [
   ["https://coderinblack.now.sh", "Team"],
   ["https://github.com/coderinblack08/contest-pug-2", "Github"],
+  ["https://github.com/coderinblack08/contest-pug-2/issues/new", "Report Bugs"],
 ];
 
 export const Login: React.FC = () => (
-  <div>
+  <main className="max-w-3xl mx-auto px-5 py-10 md:py-20 2xl:py-32">
     <h1 className="font-sans font-bold text-2xl mb-8">Contest Pug</h1>
-    <p className="text-lg mb-2">
+    <p className="text-lg mb-4 font-bold">
       🤙 🌸 &nbsp; The smarter way to host online competitions.
     </p>
     <ul className="list-inside list-disc">
@@ -32,5 +33,5 @@ export const Login: React.FC = () => (
         </div>
       ))}
     </footer>
-  </div>
+  </main>
 );

@@ -4,16 +4,12 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Contest } from "./Contest";
 import { User } from "./User";
 
 @Entity()
 export class Member extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @PrimaryColumn()
   contestId: string;
 

@@ -18,7 +18,7 @@ export const Link: React.FC<LinkProps> = ({
     <a
       href={isExternal ? href : undefined}
       className={`${
-        unstyled ? null : "text-blue-300 hover:underline hover:text-blue-200"
+        unstyled ? null : "text-blue-400 hover:underline hover:text-blue-300"
       } cursor-pointer ${className}`}
     >
       {children}

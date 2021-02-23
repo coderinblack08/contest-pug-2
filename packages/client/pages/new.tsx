@@ -25,10 +25,10 @@ const New: React.FC = () => {
             mutate(["/contests/create", values, "POST"], {
               onSuccess: async (x) => {
                 router.push("/");
-                if (!cache.getQueryData("/contests")) {
-                  await cache.fetchQuery("/contests");
+                if (!cache.getQueryData("/contests/joined")) {
+                  await cache.fetchQuery("/contests/joined");
                 } else {
-                  cache.setQueryData("/contests", (old: Contest[]) => [
+                  cache.setQueryData("/contests/joined", (old: Contest[]) => [
                     ...old,
                     x,
                   ]);

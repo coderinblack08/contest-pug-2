@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { useTokenStore } from "../../store/auth";
 import { Login } from "../screens/Login";
 import queryString from "query-string";
+import { useRouter } from "next/router";
 
 export const Wrapper: React.FC = ({ children }) => {
   const hasTokens = useTokenStore((s) => !!s.accessToken && !!s.refreshToken);
+  const router = useRouter();
 
   useEffect(() => {
     const params = queryString.parse(window.location.search);
@@ -14,20 +16,17 @@ export const Wrapper: React.FC = ({ children }) => {
       params.accessToken &&
       params.refreshToken
     ) {
+      const { accessToken, refreshToken } = params;
+      router.replace("/", undefined, { shallow: true });
       useTokenStore.getState().setTokens({
-        accessToken: params.accessToken,
-        refreshToken: params.refreshToken,
+        accessToken,
+        refreshToken,
       });
-      window.history.replaceState({}, document.title, "/");
     }
   }, []);
 
   if (!hasTokens) {
-    return (
-      <main className="max-w-3xl mx-auto px-5 py-10 md:py-20 2xl:py-32">
-        <Login />
-      </main>
-    );
+    return <Login />;
   }
 
   return <div>{children}</div>; // TODO: Getting error "Expected server HTML to contain a matching <div> in <div>"

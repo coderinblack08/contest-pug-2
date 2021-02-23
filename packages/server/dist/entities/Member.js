@@ -16,10 +16,6 @@ const User_1 = require("./User");
 let Member = class Member extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
-    __metadata("design:type", Number)
-], Member.prototype, "id", void 0);
-__decorate([
     typeorm_1.PrimaryColumn(),
     __metadata("design:type", String)
 ], Member.prototype, "contestId", void 0);

@@ -3,6 +3,7 @@ import { AppProps } from "next/app";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { Wrapper } from "../components/other/Wrapper";
 import "../styles/fonts.css";
 import "../styles/globals.css";
@@ -26,6 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {process.env.NODE_ENV === "development" ? <ReactQueryDevtools /> : null}
       <DefaultSeo
         title="Contest Pug"
         description="🤙 🌸 The smarter way to host online competitions."

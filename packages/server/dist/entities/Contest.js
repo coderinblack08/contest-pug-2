@@ -30,6 +30,10 @@ __decorate([
 __decorate([
     typeorm_1.Column("text", { nullable: true }),
     __metadata("design:type", Object)
+], Contest.prototype, "website", void 0);
+__decorate([
+    typeorm_1.Column("text", { nullable: true }),
+    __metadata("design:type", Object)
 ], Contest.prototype, "description", void 0);
 __decorate([
     typeorm_1.Column("text", { nullable: true }),

@@ -25,7 +25,11 @@ const Member_1 = require("../entities/Member");
 const router = express_1.default.Router();
 router.post("/join", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield Member_1.Member.insert({ contestId: req.body.contestId, userId: req.userId });
+        yield Member_1.Member.insert({
+            contestId: req.body.contestId,
+            userId: req.userId,
+            response: req.body.response,
+        });
         yield typeorm_1.getConnection()
             .getRepository(Contest_1.Contest)
             .increment({ id: req.body.contestId }, "competitors", 1);
@@ -37,10 +41,15 @@ router.post("/join", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, vo
 }));
 router.post("/unjoin", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield Member_1.Member.delete({ contestId: req.body.contestId, userId: req.userId });
-        yield typeorm_1.getConnection()
-            .getRepository(Contest_1.Contest)
-            .decrement({ id: req.body.contestId }, "competitors", 1);
+        const deletion = yield Member_1.Member.delete({
+            contestId: req.body.contestId,
+            userId: req.userId,
+        });
+        if (deletion.affected === 1) {
+            yield typeorm_1.getConnection()
+                .getRepository(Contest_1.Contest)
+                .decrement({ id: req.body.contestId }, "competitors", 1);
+        }
         res.send(true);
     }
     catch (error) {

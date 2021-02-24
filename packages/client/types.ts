@@ -20,24 +20,26 @@ export interface User {
   createdAt: string;
 }
 
+export type FormQuestion = {
+  question: string;
+  type:
+    | "text"
+    | "number"
+    | "datetime-local"
+    | "date"
+    | "time"
+    | "checkbox"
+    | "telephone";
+  required: boolean;
+};
+
 export interface FormikContest {
   name: string;
   website?: string;
   email?: string;
   description: string;
-  instruction?: string;
-  form: {
-    question: string;
-    type:
-      | "text"
-      | "number"
-      | "datetime"
-      | "date"
-      | "time"
-      | "checkbox"
-      | "telephone";
-    required: boolean;
-  }[];
+  instructions?: string;
+  form: FormQuestion[];
 }
 
 export interface Contest extends FormikContest {
@@ -47,3 +49,5 @@ export interface Contest extends FormikContest {
   updatedAt: Date;
   createdAt: Date;
 }
+
+export type FetchedContest = Contest & { isCreator: boolean; joined: boolean };

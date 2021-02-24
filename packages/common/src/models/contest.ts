@@ -15,7 +15,7 @@ export const contestSchema = Yup.object({
         .oneOf([
           "text",
           "number",
-          "datetime",
+          "datetime-local",
           "date",
           "time",
           "checkbox",

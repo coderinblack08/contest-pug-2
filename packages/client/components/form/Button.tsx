@@ -8,7 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const colors = {
   default: "focus:ring-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-900",
-  blue: "focus:ring-blue-300 bg-blue-500 hover:bg-blue-600 text-white",
+  blue: "focus:ring-blue-400 bg-blue-500 hover:bg-blue-600 text-white",
 };
 
 export const Button: React.FC<ButtonProps> = ({
@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const comp = (
     <button
-      className={`transition focus:outline-none focus:ring-1 focus:ring-offset-4 focus:ring-offset-gray-900 font-sans font-medium py-2 px-3 rounded ${colors[color]} ${className}`}
+      className={`transition focus:outline-none focus:ring-1 focus:ring-offset-4 focus:ring-offset-gray-900 font-medium py-2 px-3 rounded ${colors[color]} ${className}`}
       {...props}
     >
       {children}

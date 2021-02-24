@@ -1,24 +1,19 @@
-import { GetServerSideProps, NextPage } from "next";
-import { Link } from "../../components/general/Link";
-import React from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Button } from "../../components/form/Button";
-import { Layout } from "../../components/general/Layout";
-import { Navbar } from "../../components/general/Navbar";
-import { Contest } from "../../types";
 import { MailOutline } from "heroicons-react";
-import { mutator } from "../../utils/mutator";
+import { GetServerSideProps, NextPage } from "next";
+import React from "react";
+import { useQuery } from "react-query";
+import { JoinModal } from "../../components/contest/JoinModal";
+import { Layout } from "../../components/general/Layout";
+import { Link } from "../../components/general/Link";
+import { Navbar } from "../../components/general/Navbar";
+import { FetchedContest } from "../../types";
 
 interface Props {
   slug: string;
 }
 
-type FetchedContest = Contest & { isCreator: boolean; joined: boolean };
-
 const ContestPage: NextPage<Props> = ({ slug }) => {
   const { data: contest } = useQuery<FetchedContest>(`/contests/${slug}`);
-  const cache = useQueryClient();
-  const { mutate } = useMutation(mutator);
 
   return (
     <div>
@@ -26,52 +21,7 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
       <Layout>
         <header className="flex items-end justify-between w-full">
           <h1 className="text-xl font-bold">{contest?.name}</h1>
-          <Button
-            className="px-5"
-            color="blue"
-            onClick={() => {
-              mutate(
-                [
-                  `/contests/${contest?.joined ? "unjoin" : "join"}`,
-                  { contestId: slug },
-                  "POST",
-                ],
-                {
-                  onSuccess: (x) => {
-                    cache.setQueryData(
-                      `/contests/${slug}`,
-                      (old: FetchedContest) => ({
-                        ...old,
-                        joined: !old.joined,
-                        competitors: old.competitors + (old.joined ? -1 : 1),
-                      })
-                    );
-                    if (cache.getQueryData("/contests/joined")) {
-                      cache.setQueryData(
-                        "/contests/joined",
-                        (old: Contest[]) => {
-                          const index = old.findIndex(
-                            (x) => x.id === contest?.id
-                          );
-                          old[index] = {
-                            ...old[index],
-                            competitors:
-                              old[index].competitors +
-                              (contest?.joined ? -1 : 1),
-                          };
-                          return old;
-                        }
-                      );
-                    } else {
-                      cache.fetchQuery("/contests/joined");
-                    }
-                  },
-                }
-              );
-            }}
-          >
-            ️{contest?.joined ? "Unjoin 👋" : "Join 👈"}
-          </Button>
+          <JoinModal slug={slug} />
         </header>
         <pre>{JSON.stringify(contest, null, 2)}</pre>
         <p className="mt-4 text-gray-300">{contest?.description}</p>

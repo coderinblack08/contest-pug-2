@@ -3,7 +3,7 @@ import ReactModal, { Props } from "react-modal";
 
 const customStyles = {
   overlay: {
-    backgroundColor: "rgba(0,0,0,.5)",
+    backgroundColor: "rgba(0, 0, 0, .6)",
     zIndex: 999,
   },
   content: {
@@ -13,7 +13,7 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    backgroundColor: "#262626",
+    backgroundColor: "rgb(32, 32, 35)",
     border: "none",
     width: "100%",
     maxWidth: 500,

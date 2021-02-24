@@ -43,7 +43,7 @@ const New: React.FC = () => {
               website: "",
               email: "",
               description: "",
-              instruction: "",
+              instructions: "",
               form: [],
             } as FormikContest
           }
@@ -127,7 +127,7 @@ const New: React.FC = () => {
                             <option value="number">Number</option>
                             <option value="checkbox">Checkbox</option>
                             <option value="tel">Telephone</option>
-                            <option value="datetime">Datetime</option>
+                            <option value="datetime-local">Datetime</option>
                             <option value="date">Date</option>
                             <option value="time">Time</option>
                           </Field>

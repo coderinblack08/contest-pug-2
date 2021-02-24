@@ -13,7 +13,11 @@ const router = express.Router();
 
 router.post("/join", isAuth(), async (req: any, res, next) => {
   try {
-    await Member.insert({ contestId: req.body.contestId, userId: req.userId });
+    await Member.insert({
+      contestId: req.body.contestId,
+      userId: req.userId,
+      response: req.body.response,
+    });
     await getConnection()
       .getRepository(Contest)
       .increment({ id: req.body.contestId }, "competitors", 1);
@@ -25,10 +29,15 @@ router.post("/join", isAuth(), async (req: any, res, next) => {
 
 router.post("/unjoin", isAuth(), async (req: any, res, next) => {
   try {
-    await Member.delete({ contestId: req.body.contestId, userId: req.userId });
-    await getConnection()
-      .getRepository(Contest)
-      .decrement({ id: req.body.contestId }, "competitors", 1);
+    const deletion = await Member.delete({
+      contestId: req.body.contestId,
+      userId: req.userId,
+    });
+    if (deletion.affected === 1) {
+      await getConnection()
+        .getRepository(Contest)
+        .decrement({ id: req.body.contestId }, "competitors", 1);
+    }
     res.send(true);
   } catch (error) {
     next(createHttpError(400, new Error(error)));

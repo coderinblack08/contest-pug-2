@@ -23,7 +23,9 @@ export const Input: React.FC<InputFieldProps> = ({
   const hasError = !!error;
   return (
     <div>
-      <label className="inline-block font-bold mb-1.5 text-sm">{label}</label>
+      {label ? (
+        <label className="inline-block font-bold mb-1.5 text-sm">{label}</label>
+      ) : null}
       {!textarea ? (
         <input
           className={

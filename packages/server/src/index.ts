@@ -1,11 +1,13 @@
 import cors from "cors";
 import express from "express";
+import { Server } from "http";
 import helmet from "helmet";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { join } from "path";
 import { createConnection } from "typeorm";
-import contestRouter from "./api/contest";
+import contestRouter from "./api/contests";
+import problemRouter from "./api/problems";
 import { port, __prod__ } from "./constants";
 import { User } from "./entities/User";
 import { createTokens } from "./utils/createTokens";
@@ -26,11 +28,12 @@ const main = async () => {
   await conn.runMigrations();
 
   const app = express();
+  const http = new Server(app);
   // app.set("trust proxy", 1);
   app.use(helmet());
   app.use(
     cors({
-      origin: "*", // https://localhost:3000
+      origin: "*",
       maxAge: __prod__ ? 86400 : undefined,
       exposedHeaders: [
         "access-token",
@@ -38,13 +41,13 @@ const main = async () => {
         "content-type",
         "content-length",
       ],
-      // credentials: true,
     })
   );
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(passport.initialize());
   app.use("/contests", contestRouter);
+  app.use("/problems", problemRouter);
 
   passport.serializeUser((user: any, done) => done(null, user.accessToken));
 
@@ -67,8 +70,7 @@ const main = async () => {
             (profile._json as any).avatar_url ||
             "",
           other: profile._json,
-          // profileURL: profile.profileUrl,
-          username: profile.name ? Object.values(profile.name).join(" ") : null, // TODO: Given name backup + Something other than null
+          username: profile.name ? Object.values(profile.name).join(" ") : null,
         };
         if (user) {
           await User.update(user.id, data);
@@ -126,7 +128,7 @@ const main = async () => {
     res.json(await User.findOne(req.userId));
   });
 
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+  http.listen(port, () => console.log(`Listening on port ${port}`));
 };
 
-main();
+main().catch((err) => console.error(err));

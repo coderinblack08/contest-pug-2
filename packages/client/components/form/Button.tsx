@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const comp = (
     <button
-      className={`transition focus:outline-none focus:ring-1 focus:ring-offset-4 focus:ring-offset-gray-900 font-medium py-2 px-3 rounded ${colors[color]} ${className}`}
+      className={`transition focus:outline-none focus:ring-1 focus:ring-offset-4 focus:ring-offset-gray-900 font-bold py-2 px-3 rounded ${colors[color]} ${className}`}
       {...props}
     >
       {children}

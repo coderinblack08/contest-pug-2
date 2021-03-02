@@ -8,16 +8,26 @@ import { Wrapper } from "../components/other/Wrapper";
 import "../styles/fonts.css";
 import "../styles/globals.css";
 import { fetcher } from "../utils/fetcher";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+import { Router } from "next/router";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,
-      staleTime: 1000 * 60 * 5,
+      staleTime: Infinity,
+      cacheTime: Infinity,
       queryFn: fetcher,
     },
   },
 });
+
+NProgress.configure({ showSpinner: false });
+
+Router.events.on("routeChangeStart", () => NProgress.start());
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 function MyApp({ Component, pageProps }: AppProps) {
   const url =

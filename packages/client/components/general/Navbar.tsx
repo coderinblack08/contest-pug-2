@@ -10,7 +10,7 @@ import ReactTooltip from "react-tooltip";
 
 const routes = {
   "/": "Home",
-  "/compete": "Compete",
+  "/browse": "Browse",
   "/archive": "Archive",
 };
 
@@ -86,6 +86,7 @@ export const Navbar: React.FC = ({}) => {
                   className="rounded-full w-8 h-8 ring ring-blue-500"
                   src={me?.profilePicture!}
                   alt="Profile picture"
+                  referrerPolicy="no-referrer"
                 />
               </a>
             </Link>

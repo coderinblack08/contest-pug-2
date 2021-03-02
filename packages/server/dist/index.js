@@ -14,12 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
+const http_1 = require("http");
 const helmet_1 = __importDefault(require("helmet"));
 const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
 const path_1 = require("path");
 const typeorm_1 = require("typeorm");
-const contest_1 = __importDefault(require("./api/contest"));
+const contests_1 = __importDefault(require("./api/contests"));
+const problems_1 = __importDefault(require("./api/problems"));
 const constants_1 = require("./constants");
 const User_1 = require("./entities/User");
 const createTokens_1 = require("./utils/createTokens");
@@ -36,6 +38,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     yield conn.runMigrations();
     const app = express_1.default();
+    const http = new http_1.Server(app);
     app.use(helmet_1.default());
     app.use(cors_1.default({
         origin: "*",
@@ -50,7 +53,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
     app.use(passport_1.default.initialize());
-    app.use("/contests", contest_1.default);
+    app.use("/contests", contests_1.default);
+    app.use("/problems", problems_1.default);
     passport_1.default.serializeUser((user, done) => done(null, user.accessToken));
     const strategy = new passport_google_oauth20_1.Strategy({
         clientID: process.env.GOOGLE_CONSUMER_KEY,
@@ -107,7 +111,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         res.json(yield User_1.User.findOne(req.userId));
     }));
-    app.listen(constants_1.port, () => console.log(`Listening on port ${constants_1.port}`));
+    http.listen(constants_1.port, () => console.log(`Listening on port ${constants_1.port}`));
 });
-main();
+main().catch((err) => console.error(err));
 //# sourceMappingURL=index.js.map

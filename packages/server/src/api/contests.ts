@@ -37,8 +37,9 @@ router.post("/unjoin", isAuth(), async (req: any, res, next) => {
       await getConnection()
         .getRepository(Contest)
         .decrement({ id: req.body.contestId }, "competitors", 1);
+      return res.send(true);
     }
-    res.send(true);
+    res.send(false);
   } catch (error) {
     next(createHttpError(400, new Error(error)));
   }

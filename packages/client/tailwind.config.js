@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        gray: colors.gray,
+        gray: colors.trueGray,
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
@@ -14,7 +14,10 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      ringWidth: ["hover"],
+      ringColor: ["hover"],
+    },
   },
   plugins: [
     require("@tailwindcss/line-clamp"),

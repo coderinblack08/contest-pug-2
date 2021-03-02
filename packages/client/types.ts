@@ -50,4 +50,14 @@ export interface Contest extends FormikContest {
   createdAt: Date;
 }
 
-export type FetchedContest = Contest & { isCreator: boolean; joined: boolean };
+export interface Problem {
+  id: number;
+  rank: string;
+  question: string;
+  points: number;
+  type: "text" | "rich_text" | "date" | "checkbox" | "radio";
+  choices: { name: string; correct: boolean }[] | null;
+  contestId: string;
+}
+
+export type FetchedContest = Contest & { isOwner: boolean; joined: boolean };

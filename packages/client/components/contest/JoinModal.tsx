@@ -21,24 +21,26 @@ export const JoinModal: React.FC<{ slug: string }> = ({ slug }) => {
         "POST",
       ],
       {
-        onSuccess: (x) => {
-          cache.setQueryData(`/contests/${slug}`, (old: FetchedContest) => ({
-            ...old,
-            joined: !old.joined,
-            competitors: old.competitors + (old.joined ? -1 : 1),
-          }));
-          if (cache.getQueryData("/contests/joined")) {
-            cache.setQueryData("/contests/joined", (old: Contest[]) => {
-              const index = old.findIndex((x) => x.id === contest?.id);
-              old[index] = {
-                ...old[index],
-                competitors:
-                  old[index].competitors + (contest?.joined ? -1 : 1),
-              };
-              return old;
-            });
-          } else {
-            cache.fetchQuery("/contests/joined");
+        onSuccess: (x: boolean) => {
+          if (x) {
+            cache.setQueryData(`/contests/${slug}`, (old: FetchedContest) => ({
+              ...old,
+              joined: !old.joined,
+              competitors: old.competitors + (old.joined ? -1 : 1),
+            }));
+            if (cache.getQueryData("/contests/joined")) {
+              cache.setQueryData("/contests/joined", (old: Contest[]) => {
+                const index = old.findIndex((x) => x.id === contest?.id);
+                old[index] = {
+                  ...old[index],
+                  competitors:
+                    old[index].competitors + (contest?.joined ? -1 : 1),
+                };
+                return old;
+              });
+            } else {
+              cache.fetchQuery("/contests/joined");
+            }
           }
         },
       }

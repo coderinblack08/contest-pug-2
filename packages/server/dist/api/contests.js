@@ -114,4 +114,4 @@ router.get("/:id", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void
     }
 }));
 exports.default = router;
-//# sourceMappingURL=contest.js.map
+//# sourceMappingURL=contests.js.map

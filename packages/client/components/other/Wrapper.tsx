@@ -29,5 +29,5 @@ export const Wrapper: React.FC = ({ children }) => {
     return <Login />;
   }
 
-  return <div>{children}</div>; // TODO: Getting error "Expected server HTML to contain a matching <div> in <div>"
+  return <div>{children}</div>;
 };

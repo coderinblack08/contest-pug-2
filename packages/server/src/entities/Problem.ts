@@ -32,7 +32,7 @@ export class Problem extends BaseEntity {
   points: number;
 
   @Column("jsonb", { nullable: true })
-  choices: { name: string; correct: boolean }[];
+  choices: { name: string; correct?: boolean }[];
 
   @ManyToOne(() => Contest, (c) => c.problems, { onDelete: "CASCADE" })
   @JoinColumn({ name: "contestId" })

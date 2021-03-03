@@ -1,14 +1,15 @@
 import { DefaultSeo } from "next-seo";
 import { AppProps } from "next/app";
 import React from "react";
+import NProgress from "nprogress";
+import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Wrapper } from "../components/other/Wrapper";
+import { fetcher } from "../utils/fetcher";
 import "../styles/fonts.css";
 import "../styles/globals.css";
-import { fetcher } from "../utils/fetcher";
-import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Router } from "next/router";
 
@@ -38,6 +39,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       {process.env.NODE_ENV === "development" ? <ReactQueryDevtools /> : null}
+      <Head>
+        <meta charSet="utf-8" />
+      </Head>
       <DefaultSeo
         title="Contest Pug"
         description="🤙 🌸 The smarter way to host online competitions."

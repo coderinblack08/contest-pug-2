@@ -13,7 +13,7 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    backgroundColor: "rgb(32, 32, 35)",
+    backgroundColor: "rgb(42, 42, 46)",
     border: "none",
     width: "100%",
     maxWidth: 500,
@@ -22,7 +22,7 @@ const customStyles = {
 
 export const Modal: React.FC<Props> = ({ children, ...props }) => {
   return (
-    <ReactModal style={customStyles} {...props}>
+    <ReactModal style={customStyles} {...props} ariaHideApp={false}>
       {children}
     </ReactModal>
   );

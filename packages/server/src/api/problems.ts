@@ -1,12 +1,13 @@
+import { problemSchema } from "@contest-pug/common";
 import express from "express";
+import createHttpError from "http-errors";
 import { RateLimiterRedis } from "rate-limiter-flexible";
+import { getConnection } from "typeorm";
+import { Contest } from "../entities/Contest";
+import { Problem } from "../entities/Problem";
 import { defaultRateLimitOptions } from "../redis";
 import { isAuth } from "../utils/isAuth";
-import { problemSchema } from "@contest-pug/common";
 import { rateLimitMiddleware } from "../utils/rateLimitMiddleware";
-import createHttpError from "http-errors";
-import { getConnection } from "typeorm";
-import { Problem } from "../entities/Problem";
 
 const router = express.Router();
 
@@ -47,12 +48,50 @@ router.get("/:id", isAuth(), async (req: any, res, next) => {
     const problems = await getConnection().query(
       `
       SELECT * FROM problem p
-      WHERE p."contestId" = $1
+      WHERE p."contestId" = $1 AND EXISTS (
+        SELECT * FROM contest c WHERE c.id = p."contestId" AND c."creatorId" = $2
+      )
       ORDER BY p.rank
     `,
-      [req.params.id]
+      [req.params.id, req.userId]
     );
     res.json(problems);
+  } catch (error) {
+    console.error(error);
+    next(createHttpError(400, error));
+  }
+});
+
+router.put("/update", isAuth(), async (req: any, res, next) => {
+  try {
+    const isOwner = await Contest.findOne({
+      id: req.body.contestId,
+      creatorId: req.userId,
+    });
+    if (isOwner) {
+      await Problem.update({ id: req.body.id }, req.body);
+      res.send(true);
+    } else {
+      next(createHttpError(401, "not authorized"));
+    }
+  } catch (error) {
+    console.error(error);
+    next(createHttpError(400, error));
+  }
+});
+
+router.delete("/:id", isAuth(), async (req: any, res, next) => {
+  try {
+    await getConnection().query(
+      `
+      DELETE FROM problem p
+      WHERE p.id = $1 AND EXISTS (
+        SELECT * FROM contest c WHERE c.id = p."contestId" AND c."creatorId" = $2
+      )
+    `,
+      [req.params.id, req.userId]
+    );
+    res.send(true);
   } catch (error) {
     console.error(error);
     next(createHttpError(400, error));

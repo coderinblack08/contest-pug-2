@@ -3,7 +3,7 @@ import { useTokenStore } from "../store/auth";
 export const mutator = async ([path, body, method = "POST"]: [
   string,
   any,
-  "POST" | "PUT"
+  "POST" | "PUT" | "DELETE"
 ]) => {
   const { getState } = useTokenStore;
   const { accessToken, refreshToken, setTokens } = getState();

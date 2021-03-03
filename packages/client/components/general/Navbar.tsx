@@ -22,7 +22,7 @@ export const Navbar: React.FC = ({}) => {
     r === route.replace("http://localhost:3000", "");
 
   return (
-    <div className="sticky top-0 bg-gray-800 py-4 shadow-2xl">
+    <div className="sticky top-0 bg-gray-800 py-4">
       <nav className="flex items-center justify-between md:max-w-3xl max-w-2xl mx-auto px-5">
         <ul className="flex items-center space-x-10 text-gray-400">
           {Object.keys(routes).map((r) => (

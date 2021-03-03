@@ -7,7 +7,7 @@ export const problemSchema = Yup.object({
   choices: Yup.array().of(
     Yup.object().shape({
       name: Yup.string().max(200).required(),
-      correct: Yup.boolean().required(),
+      correct: Yup.boolean(),
     })
   ),
   points: Yup.number().min(0),

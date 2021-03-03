@@ -1,51 +1,30 @@
-import {
-  PencilAltOutline,
-  PhotographOutline,
-  PlusOutline,
-  TrashOutline,
-} from "heroicons-react";
+import { Form, Formik } from "formik";
+import { PlusOutline, TemplateOutline, TrashOutline } from "heroicons-react";
+import { LexoRank } from "lexorank";
 import { GetServerSideProps, NextPage } from "next";
 import React, { useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Tabs } from "../../components/contest/Tabs";
+import { Button } from "../../components/form/Button";
 import { Layout } from "../../components/general/Layout";
+import { Loading } from "../../components/general/Loading";
 import { Navbar } from "../../components/general/Navbar";
-import { LexoRank } from "lexorank";
-import { mutator } from "../../utils/mutator";
+import { EditModal } from "../../components/problem/EditModal";
 import { Problem } from "../../types";
-import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd";
-import { Form, Formik } from "formik";
+import { mutator } from "../../utils/mutator";
 
 interface Props {
   slug: string;
 }
 
-const createProblemButtons = {
-  "Short Answer": {
-    color: "green",
-    type: "text",
-  },
-  "Rich Text": {
-    color: "purple",
-    type: "rich_text",
-  },
-  "Multiple Choice": {
-    color: "yellow",
-    type: "radio",
-  },
-};
-
-const typeToName = {
-  text: "Short Answer",
-  rich_text: "Rich Text",
-  radio: "Multiple Choice",
-};
-
 const ContestPage: NextPage<Props> = ({ slug }) => {
-  const { data: problems } = useQuery<Problem[]>(`/problems/${slug}`);
+  const { data: problems, isLoading } = useQuery<Problem[]>(
+    `/problems/${slug}`
+  );
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { mutate, isLoading } = useMutation(mutator);
+  const { mutate } = useMutation(mutator);
   const queryClient = useQueryClient();
 
   return (
@@ -61,7 +40,15 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
           enableReinitialize
         >
           {({ setValues, values }) => (
-            <Form className="mt-5 bg-gray-800 p-2.5 pb-0.5 rounded-md">
+            <Form
+              className="mt-5 bg-gray-800 p-2.5 pb-0.5 rounded-md"
+              style={{ display: problems?.length === 0 ? "none" : "block" }}
+            >
+              {isLoading && (
+                <div className="flex justify-center items-center py-10">
+                  <Loading />
+                </div>
+              )}
               <DragDropContext
                 onDragEnd={({ source, destination }) => {
                   if (!destination) {
@@ -81,7 +68,34 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                     0,
                     values.problems[source.index]
                   );
-                  console.log(newProblems);
+
+                  let newLexorank;
+
+                  if (destination.index === 0) {
+                    newLexorank = LexoRank.parse(
+                      newProblems[destination.index + 1].rank
+                    ).genPrev();
+                  } else if (destination.index === newProblems.length - 1) {
+                    newLexorank = LexoRank.parse(
+                      newProblems[destination.index - 1].rank
+                    ).genNext();
+                  } else {
+                    const left = LexoRank.parse(
+                      newProblems[destination.index - 1].rank
+                    );
+                    const right = LexoRank.parse(
+                      newProblems[destination.index + 1].rank
+                    );
+                    newLexorank = left.between(right);
+                  }
+
+                  newProblems[destination.index].rank = newLexorank.toString();
+
+                  mutate([
+                    "/problems/update",
+                    newProblems[destination.index],
+                    "PUT",
+                  ]);
 
                   setValues({ ...values, problems: newProblems });
                 }}
@@ -113,17 +127,30 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                                 disabled
                               />
                               <div className="flex items-center space-x-2 absolute top-3 right-3">
-                                <button className="inline-flex items-center bg-blue-600 px-3 py-1 rounded font-bold text-sm">
-                                  <PencilAltOutline
-                                    size={14}
-                                    className="mr-1"
-                                  />
-                                  Edit
-                                </button>
-                                <button className="inline-flex items-center bg-red-600 px-3 py-1 rounded font-bold text-sm">
-                                  <TrashOutline size={14} className="mr-1" />
+                                <EditModal id={problem.contestId} index={i} />
+                                <Button
+                                  onClick={() => {
+                                    mutate(
+                                      [`/problems/${problem.id}`, {}, "DELETE"],
+                                      {
+                                        onSuccess: () => {
+                                          queryClient.setQueryData<Problem[]>(
+                                            `/problems/${slug}`,
+                                            (old: Problem[]) => {
+                                              old.splice(i, 1);
+                                              return old;
+                                            }
+                                          );
+                                        },
+                                      }
+                                    );
+                                  }}
+                                  leftIcon={<TrashOutline size={14} />}
+                                  color="red"
+                                  size="xs"
+                                >
                                   Delete
-                                </button>
+                                </Button>
                               </div>
                             </div>
                           )}
@@ -213,13 +240,34 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
               </button>
             </Popover>
             <button className="inline-flex items-center justify-center border border-gray-700 bg-gray-800 w-8 h-8 rounded focus:outline-none focus:ring">
-              <PhotographOutline size={20} />
+              <TemplateOutline size={20} />
             </button>
           </div>
         </div>
       </Layout>
     </div>
   );
+};
+
+const createProblemButtons = {
+  "Short Answer": {
+    color: "green",
+    type: "text",
+  },
+  "Rich Text": {
+    color: "purple",
+    type: "rich_text",
+  },
+  "Multiple Choice": {
+    color: "yellow",
+    type: "radio",
+  },
+};
+
+const typeToName = {
+  text: "Short Answer",
+  rich_text: "Rich Text",
+  radio: "Multiple Choice",
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {

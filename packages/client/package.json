@@ -9,10 +9,14 @@
   },
   "dependencies": {
     "@contest-pug/common": "1.0.0",
+    "@draft-js-plugins/editor": "^4.1.0",
+    "@draft-js-plugins/linkify": "^4.1.0",
     "@tailwindcss/line-clamp": "^0.2.0",
     "@types/query-string": "^6.3.0",
     "@types/react-modal": "^3.12.0",
     "autoprefixer": "^10.0.4",
+    "draft-js": "^0.11.7",
+    "es6-shim": "^0.35.6",
     "formik": "^2.2.6",
     "heroicons-react": "^1.3.0",
     "lexorank": "^1.0.4",
@@ -36,6 +40,7 @@
   },
   "devDependencies": {
     "@tailwindcss/custom-forms": "^0.2.1",
+    "@types/draft-js": "^0.10.44",
     "@types/node": "^14.14.28",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.2",

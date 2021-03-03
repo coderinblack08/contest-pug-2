@@ -27,7 +27,7 @@ exports.problemSchema = Yup.object({
     type: Yup.string().oneOf(["text", "rich_text", "date", "checkbox", "radio"]),
     choices: Yup.array().of(Yup.object().shape({
         name: Yup.string().max(200).required(),
-        correct: Yup.boolean().required(),
+        correct: Yup.boolean(),
     })),
     points: Yup.number().min(0),
     question: Yup.string(),

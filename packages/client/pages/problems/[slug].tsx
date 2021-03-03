@@ -1,3 +1,9 @@
+import {
+  ContentState,
+  convertFromHTML,
+  convertFromRaw,
+  convertToRaw,
+} from "draft-js";
 import { Form, Formik } from "formik";
 import { PlusOutline, TemplateOutline, TrashOutline } from "heroicons-react";
 import { LexoRank } from "lexorank";
@@ -5,6 +11,7 @@ import { GetServerSideProps, NextPage } from "next";
 import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { stateToHTML } from "draft-js-export-html";
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Tabs } from "../../components/contest/Tabs";
 import { Button } from "../../components/form/Button";
@@ -116,10 +123,19 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                               {...draggableProvided.draggableProps}
                               ref={draggableProvided.innerRef}
                             >
-                              <strong className="mr-2">{i + 1}.</strong>
-                              <span className="text-gray-300">
-                                {problem.question}
-                              </span>
+                              <div className="flex space-x-2">
+                                <strong>{i + 1}.</strong>
+                                <div
+                                  className="text-gray-300"
+                                  dangerouslySetInnerHTML={{
+                                    __html: stateToHTML(
+                                      convertFromRaw(
+                                        JSON.parse(problem.question)
+                                      )
+                                    ),
+                                  }}
+                                />
+                              </div>
                               <input
                                 type="text"
                                 className="block bg-gray-800 border border-gray-700 rounded mt-3 w-64 py-1 px-2"
@@ -191,12 +207,23 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                           key={name}
                           className={`w-40 rounded bg-${color}-600 border border-${color}-500 p-2 focus:outline-none focus:ring`}
                           onClick={() => {
+                            const {
+                              entityMap,
+                              contentBlocks,
+                            } = convertFromHTML("<p>Enter question here</p>");
                             mutate(
                               [
                                 "/problems/create",
                                 {
                                   type,
-                                  question: "Enter your question",
+                                  question: JSON.stringify(
+                                    convertToRaw(
+                                      ContentState.createFromBlockArray(
+                                        contentBlocks,
+                                        entityMap
+                                      )
+                                    )
+                                  ),
                                   items:
                                     type === "radio"
                                       ? ["Enter an answer choice"]

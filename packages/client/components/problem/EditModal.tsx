@@ -1,3 +1,4 @@
+import { convertFromRaw, Editor, EditorState } from "draft-js";
 import { Form, Formik } from "formik";
 import { PencilAltOutline, PlusOutline, XOutline } from "heroicons-react";
 import React, { useState } from "react";
@@ -42,10 +43,24 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
         </Button>
         {!isLoading && data && (
           <>
-            <Formik initialValues={data[index]} onSubmit={() => {}}>
-              {() => (
+            <Formik
+              initialValues={{
+                ...data[index],
+                // question: EditorState.createEmpty(),
+                question: EditorState.createWithContent(
+                  convertFromRaw(JSON.parse(data[index].question))
+                ),
+              }}
+              onSubmit={() => {}}
+            >
+              {({ handleBlur, setFieldValue, values }) => (
                 <Form>
-                  <RichText />
+                  <RichText
+                    onBlur={handleBlur}
+                    onChange={setFieldValue}
+                    editorState={values.question}
+                    name="question"
+                  />
                   <h3 className="text-sm font-bold mt-5 mb-2.5">Auto Grade</h3>
                   <Button size="sm" leftIcon={<PlusOutline size={18} />}>
                     Add Answer

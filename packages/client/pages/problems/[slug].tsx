@@ -3,7 +3,9 @@ import {
   convertFromHTML,
   convertFromRaw,
   convertToRaw,
+  EditorState,
 } from "draft-js";
+import { stateToHTML } from "draft-js-export-html";
 import { Form, Formik } from "formik";
 import { PlusOutline, TemplateOutline, TrashOutline } from "heroicons-react";
 import { LexoRank } from "lexorank";
@@ -11,10 +13,10 @@ import { GetServerSideProps, NextPage } from "next";
 import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { stateToHTML } from "draft-js-export-html";
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Tabs } from "../../components/contest/Tabs";
 import { Button } from "../../components/form/Button";
+import { exporter, fontSizes } from "../../components/form/RichText";
 import { Layout } from "../../components/general/Layout";
 import { Loading } from "../../components/general/Loading";
 import { Navbar } from "../../components/general/Navbar";
@@ -123,18 +125,59 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                               {...draggableProvided.draggableProps}
                               ref={draggableProvided.innerRef}
                             >
-                              <div className="flex space-x-2">
-                                <strong>{i + 1}.</strong>
-                                <div
-                                  className="text-gray-300"
-                                  dangerouslySetInnerHTML={{
-                                    __html: stateToHTML(
-                                      convertFromRaw(
-                                        JSON.parse(problem.question)
-                                      )
-                                    ),
-                                  }}
-                                />
+                              <div className="flex justify-between items-start">
+                                <div className="flex space-x-2">
+                                  <strong>{i + 1}.</strong>
+                                  <article
+                                    className="text-gray-300"
+                                    dangerouslySetInnerHTML={{
+                                      __html: stateToHTML(
+                                        convertFromRaw(
+                                          JSON.parse(problem.question)
+                                        ),
+                                        {
+                                          inlineStyles: exporter(
+                                            EditorState.createWithContent(
+                                              convertFromRaw(
+                                                JSON.parse(problem.question)
+                                              )
+                                            )
+                                          ),
+                                        }
+                                      ),
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <EditModal id={problem.contestId} index={i} />
+                                  <Button
+                                    onClick={() => {
+                                      mutate(
+                                        [
+                                          `/problems/${problem.id}`,
+                                          {},
+                                          "DELETE",
+                                        ],
+                                        {
+                                          onSuccess: () => {
+                                            queryClient.setQueryData<Problem[]>(
+                                              `/problems/${slug}`,
+                                              (old: Problem[]) => {
+                                                old.splice(i, 1);
+                                                return old;
+                                              }
+                                            );
+                                          },
+                                        }
+                                      );
+                                    }}
+                                    leftIcon={<TrashOutline size={14} />}
+                                    color="red"
+                                    size="xs"
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
                               </div>
                               <input
                                 type="text"
@@ -142,32 +185,6 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                                 placeholder={typeToName[problem.type]}
                                 disabled
                               />
-                              <div className="flex items-center space-x-2 absolute top-3 right-3">
-                                <EditModal id={problem.contestId} index={i} />
-                                <Button
-                                  onClick={() => {
-                                    mutate(
-                                      [`/problems/${problem.id}`, {}, "DELETE"],
-                                      {
-                                        onSuccess: () => {
-                                          queryClient.setQueryData<Problem[]>(
-                                            `/problems/${slug}`,
-                                            (old: Problem[]) => {
-                                              old.splice(i, 1);
-                                              return old;
-                                            }
-                                          );
-                                        },
-                                      }
-                                    );
-                                  }}
-                                  leftIcon={<TrashOutline size={14} />}
-                                  color="red"
-                                  size="xs"
-                                >
-                                  Delete
-                                </Button>
-                              </div>
                             </div>
                           )}
                         </Draggable>

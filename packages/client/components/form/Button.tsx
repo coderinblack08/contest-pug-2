@@ -34,11 +34,13 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const comp = (
     <button
-      className={`inline-flex items-center transition focus:outline-none focus:ring-1 ${
+      className={`transition focus:outline-none focus:ring-1 ${
         color !== "transparent"
           ? "focus:ring-offset-4 focus:ring-offset-gray-900"
           : ""
-      } rounded ${colors[color]} ${sizes[size]} ${className}`}
+      } ${leftIcon ? "inline-flex justify-center items-center" : ""} rounded ${
+        colors[color]
+      } ${sizes[size]} ${className}`}
       {...props}
     >
       {leftIcon && <div className="mr-1">{leftIcon}</div>}

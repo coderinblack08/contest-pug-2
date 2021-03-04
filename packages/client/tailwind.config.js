@@ -22,5 +22,6 @@ module.exports = {
   plugins: [
     require("@tailwindcss/line-clamp"),
     require("@tailwindcss/custom-forms"),
+    require("@tailwindcss/typography"),
   ],
 };

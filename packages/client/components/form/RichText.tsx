@@ -2,10 +2,10 @@ import Editor from "@draft-js-plugins/editor";
 import createLinkifyPlugin from "@draft-js-plugins/linkify";
 import "@draft-js-plugins/linkify/lib/plugin.css";
 import { EditorState, RichUtils } from "draft-js";
-import React, { FormEvent, useRef, useState } from "react";
 import createStyles from "draft-js-custom-styles";
-import { Button } from "./Button";
 import "draft-js/dist/Draft.css";
+import React, { useRef, useState } from "react";
+import { Button } from "./Button";
 
 interface RichTextProps {
   placeholder?: string;
@@ -23,7 +23,25 @@ interface RichTextProps {
 }
 
 const linkifyPlugin = createLinkifyPlugin();
-const { styles, customStyleFn } = createStyles(["font-size"]);
+export const { styles, customStyleFn, exporter } = createStyles(["font-size"]);
+
+export const fontSizes = [
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  24,
+  28,
+  32,
+  38,
+  46,
+  54,
+  62,
+  72,
+];
 
 export const RichText: React.FC<RichTextProps> = ({
   placeholder = "Example...",
@@ -34,7 +52,6 @@ export const RichText: React.FC<RichTextProps> = ({
 }) => {
   const editorRef = useRef<Editor>(null);
   const [showSelect, setShowSelect] = useState(false);
-  const [sizeSelected, setSizeSelected] = useState(16);
   const currentStyle = editorState.getCurrentInlineStyle();
 
   const setEditorState = (x: EditorState) => onChange(name, x);
@@ -50,7 +67,16 @@ export const RichText: React.FC<RichTextProps> = ({
     setEditorState(styles.fontSize.add(newEditorState, value));
   };
 
-  const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 38, 46, 54, 62, 72];
+  const currentFontSize = () => {
+    const hasFont = editorState
+      .getCurrentInlineStyle()
+      .toArray()
+      .find((x) => x.includes("CUSTOM_FONT_SIZE"));
+    if (!hasFont) {
+      return "16";
+    }
+    return hasFont.replace("CUSTOM_FONT_SIZE_", "").replace("px", "");
+  };
 
   return (
     <div className="RichEditor-root">
@@ -81,24 +107,25 @@ export const RichText: React.FC<RichTextProps> = ({
           <div className="h-5 border-l border-gray-600" />
           <div className="relative mb-1">
             <span
-              className="form-select bg-transparent rounded cursor-pointer"
+              className="form-select bg-transparent rounded cursor-pointer text-sm"
               onMouseDown={(e) => {
                 e.preventDefault();
                 setShowSelect(!showSelect);
               }}
             >
-              {sizeSelected}pt
+              {currentFontSize()}pt
             </span>
             {showSelect && (
-              <div className="bg-gray-800 border border-gray-700 shadow-2xl rounded absolute right-0 mt-1.5 z-20 text-gray-200 py-1">
+              <div className="bg-gray-800 max-h-80 overflow-y-auto border border-gray-700 shadow-2xl rounded absolute right-0 mt-1.5 z-20 text-gray-200 py-1">
                 {fontSizes.map((size) => (
                   <div
-                    className={`w-full px-3 py-1 cursor-pointer ${
-                      sizeSelected === size ? "bg-gray-700 font-bold" : ""
+                    className={`w-full px-4 py-1 cursor-pointer ${
+                      currentFontSize() === size.toString()
+                        ? "bg-gray-700 font-bold"
+                        : ""
                     }`}
                     onMouseDown={(e) => {
                       setFontSize(e, size + "px");
-                      setSizeSelected(size);
                       setShowSelect(false);
                     }}
                   >

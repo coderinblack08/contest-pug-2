@@ -16,6 +16,7 @@
     "@types/react-modal": "^3.12.0",
     "autoprefixer": "^10.0.4",
     "draft-js": "^0.11.7",
+    "draft-js-custom-styles": "^2.1.1",
     "draft-js-export-html": "^1.4.1",
     "es6-shim": "^0.35.6",
     "formik": "^2.2.6",

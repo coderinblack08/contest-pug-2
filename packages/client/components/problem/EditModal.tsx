@@ -46,7 +46,6 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
             <Formik
               initialValues={{
                 ...data[index],
-                // question: EditorState.createEmpty(),
                 question: EditorState.createWithContent(
                   convertFromRaw(JSON.parse(data[index].question))
                 ),

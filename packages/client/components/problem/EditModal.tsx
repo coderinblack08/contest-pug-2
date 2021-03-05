@@ -1,20 +1,28 @@
-import { convertFromRaw, convertToRaw, Editor, EditorState } from "draft-js";
-import { Form, Formik, useFormikContext } from "formik";
-import { PencilAltOutline, PlusOutline, XOutline } from "heroicons-react";
-import { debounce } from "lodash";
-import React, { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import { Field, Form, Formik, useFormikContext, yupToFormErrors } from "formik";
+import {
+  PencilAltOutline,
+  PlusOutline,
+  QuestionMarkCircle,
+  XOutline,
+} from "heroicons-react";
+import * as Yup from "yup";
+import { debounce, isEqual } from "lodash";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import ReactTooltip from "react-tooltip";
 import { Problem } from "../../types";
 import { mutator } from "../../utils/mutator";
 import { Button } from "../form/Button";
+import { Input } from "../form/Input";
 import { RichText } from "../form/RichText";
 import { Modal } from "../general/Modal";
 
 const AutoSave: React.FC<{ debounceMs: number }> = ({ debounceMs }) => {
   const formik = useFormikContext();
   const [lastSaved, setLastSaved] = React.useState<Date | null>(null);
-  const [prev, setPrev] = useState<EditorState | null>(null);
+  const [prev, setPrev] = useState<any>(null);
   const debouncedSubmit = React.useCallback(
     debounce(() => {
       formik.submitForm().then(() => setLastSaved(new Date()));
@@ -25,10 +33,20 @@ const AutoSave: React.FC<{ debounceMs: number }> = ({ debounceMs }) => {
   useEffect(() => {
     const curr = (formik.values as any).question as EditorState;
     if (prev === null) {
-      setPrev(curr);
-    } else if (prev.getCurrentContent() !== curr.getCurrentContent()) {
+      setPrev(formik.values);
+    } else if (prev.question.getCurrentContent() !== curr.getCurrentContent()) {
       debouncedSubmit();
-      setPrev(curr);
+      setPrev(formik.values);
+    } else {
+      const copyPrev = { ...prev };
+      const copyCurr = { ...(formik.values as any) };
+      delete copyPrev.question;
+      delete copyCurr.question;
+
+      if (!isEqual(copyCurr, copyPrev)) {
+        debouncedSubmit();
+        setPrev(formik.values);
+      }
     }
   }, [debouncedSubmit, formik.values]);
 
@@ -37,14 +55,37 @@ const AutoSave: React.FC<{ debounceMs: number }> = ({ debounceMs }) => {
   if (!!formik.isSubmitting) {
     result = "Saving...";
   } else if (Object.keys(formik.errors).length > 0) {
-    result = `ERROR: ${formik.errors}`;
+    result = `Error while saving`;
   } else if (lastSaved !== null) {
     result = `Last saved ${formatDistanceToNow(lastSaved || new Date(), {
       addSuffix: true,
     })}`;
   }
 
-  return <p className="text-sm text-gray-300 mt-2">{result}</p>;
+  return (
+    <div className="flex items-center mt-2">
+      <p className="text-sm text-gray-300">{result}</p>
+      {result && (
+        <div>
+          <QuestionMarkCircle
+            size={15}
+            className="ml-1 text-gray-400"
+            data-for="about"
+            data-tip
+          />
+          <ReactTooltip
+            id="about"
+            place="bottom"
+            type="dark"
+            effect="solid"
+            aria-haspopup
+          >
+            📀 &nbsp; Contest Pug auto-saves your work!
+          </ReactTooltip>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export const EditModal: React.FC<{ id: string; index: number }> = ({
@@ -55,6 +96,36 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
   const cache = useQueryClient();
   const { mutateAsync } = useMutation(mutator);
   const { data, isLoading } = useQuery<Problem[]>(`/problems/${id}`);
+  const schema = Yup.object().shape({
+    id: Yup.number(),
+    contestId: Yup.string().uuid(),
+    points: Yup.number().max(1000).min(0).required(),
+    question: Yup.mixed(),
+    penalty: Yup.number().max(1000).min(0).required(),
+    type: Yup.string().oneOf([
+      "text",
+      "rich_text",
+      "date",
+      "checkbox",
+      "radio",
+    ]),
+    choices: Yup.array()
+      .of(
+        Yup.object({
+          name: Yup.string(),
+          correct: Yup.bool(),
+        })
+      )
+      .nullable(),
+    answers: Yup.array()
+      .of(
+        Yup.object({
+          answer: Yup.string(),
+          percentage: Yup.number(),
+        })
+      )
+      .nullable(),
+  });
 
   return (
     <div>
@@ -88,6 +159,7 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
                   convertFromRaw(JSON.parse(data[index].question))
                 ),
               }}
+              validationSchema={schema}
               onSubmit={(values) => {
                 const body = {
                   ...values,
@@ -116,11 +188,47 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
                     editorState={values.question}
                     name="question"
                   />
-                  <AutoSave debounceMs={800} />
-                  <h3 className="text-sm font-bold mt-5 mb-2.5">Auto Grade</h3>
-                  <Button size="sm" leftIcon={<PlusOutline size={18} />}>
+                  <br />
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      name="points"
+                      label="Points"
+                      className="w-12 text-center"
+                      autoresize
+                    />
+                    <Input
+                      name="penalty"
+                      label="Penalty"
+                      className="w-12 text-center"
+                      autoresize
+                    />
+                    <div>
+                      <label
+                        htmlFor="type"
+                        className="text-sm font-bold mb-1 inline-block"
+                      >
+                        Type
+                      </label>
+                      <Field
+                        name="type"
+                        as="select"
+                        className="form-select block bg-gray-800 border border-gray-700 w-44 rounded"
+                      >
+                        <option value="text">Free Response</option>
+                        <option value="rich_text">Rich Text</option>
+                      </Field>
+                    </div>
+                  </div>
+                  <br />
+                  <h3 className="text-sm font-bold mb-2.5">Auto Grade</h3>
+                  <Button
+                    type="button"
+                    size="sm"
+                    leftIcon={<PlusOutline size={18} />}
+                  >
                     Add Answer
                   </Button>
+                  <AutoSave debounceMs={800} />
                 </Form>
               )}
             </Formik>

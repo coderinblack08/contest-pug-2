@@ -31,8 +31,14 @@ export class Problem extends BaseEntity {
   @Column({ default: 1 })
   points: number;
 
+  @Column({ default: 0 })
+  penalty: number;
+
   @Column("jsonb", { nullable: true })
   choices: { name: string; correct?: boolean }[];
+
+  @Column("jsonb", { nullable: true })
+  answers: { answer: string; percentage: number }[];
 
   @ManyToOne(() => Contest, (c) => c.problems, { onDelete: "CASCADE" })
   @JoinColumn({ name: "contestId" })

@@ -91,6 +91,8 @@ router.get("/joined", isAuth(), async (req: any, res) => {
     [req.userId]
   );
 
+  console.log(contests);
+
   res.json(contests);
 });
 

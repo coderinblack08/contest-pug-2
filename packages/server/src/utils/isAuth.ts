@@ -2,11 +2,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import { verify } from "jsonwebtoken";
 import { User } from "../entities/User";
-import {
-  AccessTokenData,
-  createTokens,
-  RefreshTokenData,
-} from "./createTokens";
+import { createTokens } from "./createTokens";
 
 export const isAuth: (
   shouldThrow?: boolean
@@ -16,16 +12,15 @@ export const isAuth: (
   next
 ) => {
   const accessToken = req.headers["access-token"];
-  if (typeof accessToken !== "string") {
+  if (!accessToken || typeof accessToken !== "string") {
     return next(
       !shouldThrow ? undefined : createHttpError(401, "Not authorized")
     );
   }
 
   try {
-    const data = <AccessTokenData>(
-      verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-    );
+    const data = verify(accessToken, process.env.ACCESS_TOKEN_SECRET) as any;
+
     (req as any).userId = data.userId;
     return next();
   } catch {}
@@ -39,9 +34,8 @@ export const isAuth: (
 
   let data;
   try {
-    data = <RefreshTokenData>(
-      verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    );
+    data = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET) as any;
+    console.log("refreshToken", data);
   } catch (err) {
     return next(
       !shouldThrow ? undefined : createHttpError(401, "Not authorized")
@@ -56,11 +50,11 @@ export const isAuth: (
     );
   }
 
-  const { refreshToken: rt, accessToken: at } = createTokens(user);
-  res.setHeader("refresh-token", rt); // TODO: maybe keep refresh-token the same if possible in future
-  res.setHeader("access-token", at);
+  const tokens = createTokens(user);
 
-  (res as any).userId = data.userId;
+  res.setHeader("refresh-token", tokens.refreshToken);
+  res.setHeader("access-token", tokens.accessToken);
+  (req as any).userId = data.userId;
 
   next();
 };

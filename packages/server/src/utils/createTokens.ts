@@ -25,7 +25,7 @@ export const createTokens = (
     { userId: user.id },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "30min",
+      expiresIn: "30mins",
     }
   );
 

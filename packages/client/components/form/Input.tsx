@@ -1,6 +1,7 @@
 import { useField } from "formik";
 import { ExclamationCircleOutline } from "heroicons-react";
-import React, { InputHTMLAttributes, ReactNode } from "react";
+import React, { InputHTMLAttributes, ReactNode, useRef } from "react";
+import AutosizeInput from "react-input-autosize";
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> &
   InputHTMLAttributes<HTMLTextAreaElement> & {
@@ -8,6 +9,7 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> &
     className?: string;
     name: string;
     textarea?: boolean;
+    autoresize?: boolean;
     minimal?: boolean;
   };
 
@@ -16,6 +18,7 @@ export const Input: React.FC<InputFieldProps> = ({
   label,
   textarea = false,
   minimal = false,
+  autoresize = false,
   className,
   ...props
 }) => {
@@ -24,14 +27,26 @@ export const Input: React.FC<InputFieldProps> = ({
   return (
     <div>
       {label ? (
-        <label className="inline-block font-bold mb-1.5 text-sm">{label}</label>
+        <label className="block font-bold mb-1 text-sm">{label}</label>
       ) : null}
-      {!textarea ? (
+      {autoresize ? (
+        <AutosizeInput
+          inputStyle={{
+            backgroundColor: "rgb(38, 38, 38)",
+            borderRadius: "4px",
+            padding: "8px 16px",
+            border: "rgb(64, 64, 64) 1px solid",
+            outline: "none",
+          }}
+          {...field}
+          {...props}
+        />
+      ) : !textarea ? (
         <input
           className={
             minimal
               ? `bg-gray-800 border-b border-gray-700 px-1 py-1.5 focus:outline-none focus:border-blue-500 transition ${className}`
-              : `placeholder-gray-500 block bg-gray-800 border border-gray-700 rounded px-3 py-1.5 focus:outline-none focus:ring w-full ${className}`
+              : `placeholder-gray-500 block bg-gray-800 border border-gray-700 rounded px-3 py-1.5 focus:outline-none focus:ring ${className}`
           }
           {...field}
           {...props}

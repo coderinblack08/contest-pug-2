@@ -21,8 +21,6 @@ export const fetcher = async <T = any>(
   const newAccessToken = request.headers.get("access-token");
   const newRefreshToken = request.headers.get("refresh-token");
 
-  console.log(newAccessToken, newRefreshToken);
-
   if (newAccessToken && newRefreshToken) {
     setTokens({ accessToken: newAccessToken, refreshToken: newRefreshToken });
   }

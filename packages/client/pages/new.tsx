@@ -58,21 +58,29 @@ const New: React.FC = () => {
                 etc.
               </p>
               <div className="space-y-5">
-                <Input name="name" label="Name" placeholder="Example" />
+                <Input
+                  name="name"
+                  label="Name"
+                  placeholder="Example"
+                  className="w-full"
+                />
                 <Input
                   name="website"
                   label="Website"
                   placeholder="https://example.com"
+                  className="w-full"
                 />
                 <Input
                   name="email"
                   label="Email"
                   placeholder="contact@example.com"
+                  className="w-full"
                 />
                 <Input
                   name="description"
                   label="Description"
                   placeholder="Example..."
+                  className="w-full"
                   textarea
                 />
               </div>
@@ -103,6 +111,7 @@ const New: React.FC = () => {
                         <Input
                           name={`form[${index}].question`}
                           placeholder="Question Label"
+                          className="w-full"
                           minimal
                         />
                         <button

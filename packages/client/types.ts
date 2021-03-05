@@ -55,8 +55,10 @@ export interface Problem {
   rank: string;
   question: string;
   points: number;
+  penalty: number;
   type: "text" | "rich_text" | "date" | "checkbox" | "radio";
   choices: { name: string; correct: boolean }[] | null;
+  answers: { answer: string; percentage: number }[] | null;
   contestId: string;
 }
 

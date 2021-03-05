@@ -89,6 +89,7 @@ router.get("/joined", isAuth_1.isAuth(), (req, res) => __awaiter(void 0, void 0,
       OR
       EXISTS (SELECT * FROM member m WHERE m."contestId" = c.id AND m."userId" = $1)
     `, [req.userId]);
+    console.log(contests);
     res.json(contests);
 }));
 router.get("/:id", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

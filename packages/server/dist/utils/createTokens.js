@@ -7,7 +7,7 @@ const createTokens = (user) => {
         expiresIn: "14d",
     });
     const accessToken = jsonwebtoken_1.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "30min",
+        expiresIn: "30mins",
     });
     return { refreshToken, accessToken };
 };

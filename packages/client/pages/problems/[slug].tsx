@@ -16,7 +16,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Tabs } from "../../components/contest/Tabs";
 import { Button } from "../../components/form/Button";
-import { exporter, fontSizes } from "../../components/form/RichText";
+import { exporter } from "../../components/form/RichText";
 import { Layout } from "../../components/general/Layout";
 import { Loading } from "../../components/general/Loading";
 import { Navbar } from "../../components/general/Navbar";
@@ -43,9 +43,7 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
         <Tabs slug={slug} />
         <Formik
           initialValues={{ problems: problems || [] }}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={(values) => {}}
           enableReinitialize
         >
           {({ setValues, values }) => (
@@ -127,7 +125,6 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                             >
                               <div className="flex justify-between items-start">
                                 <div className="flex space-x-2">
-                                  <strong>{i + 1}.</strong>
                                   <article
                                     className="text-gray-300"
                                     dangerouslySetInnerHTML={{

@@ -1,5 +1,5 @@
 import React, { DetailedHTMLProps, ImgHTMLAttributes, useState } from "react";
-import { Loading } from "./Loading";
+import { Spinner } from "./Spinner";
 
 export const ImageWithSpinner: React.FC<
   DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
@@ -13,7 +13,7 @@ export const ImageWithSpinner: React.FC<
         onError={() => setLoading(true)}
         className={`${loading ? "hidden" : className}`}
       />
-      {loading ? <Loading size={6} /> : null}
+      {loading ? <Spinner size={6} /> : null}
     </div>
   );
 };

@@ -18,11 +18,12 @@ import { Tabs } from "../../components/contest/Tabs";
 import { Button } from "../../components/form/Button";
 import { exporter } from "../../components/form/RichText";
 import { Layout } from "../../components/general/Layout";
-import { Loading } from "../../components/general/Loading";
+import { Spinner } from "../../components/general/Spinner";
 import { Navbar } from "../../components/general/Navbar";
 import { EditModal } from "../../components/problem/EditModal";
 import { Problem } from "../../types";
 import { mutator } from "../../utils/mutator";
+import { rawToHtml } from "../../utils/RichText/rawToHtml";
 
 interface Props {
   slug: string;
@@ -53,7 +54,7 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
             >
               {isLoading && (
                 <div className="flex justify-center items-center py-10">
-                  <Loading />
+                  <Spinner />
                 </div>
               )}
               <DragDropContext
@@ -128,20 +129,7 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
                                   <article
                                     className="text-gray-300"
                                     dangerouslySetInnerHTML={{
-                                      __html: stateToHTML(
-                                        convertFromRaw(
-                                          JSON.parse(problem.question)
-                                        ),
-                                        {
-                                          inlineStyles: exporter(
-                                            EditorState.createWithContent(
-                                              convertFromRaw(
-                                                JSON.parse(problem.question)
-                                              )
-                                            )
-                                          ),
-                                        }
-                                      ),
+                                      __html: rawToHtml(problem.question),
                                     }}
                                   />
                                 </div>

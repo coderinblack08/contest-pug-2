@@ -64,7 +64,7 @@ const AutoSave: React.FC<{ debounceMs: number }> = ({ debounceMs }) => {
 
   return (
     <div className="flex items-center mt-2">
-      <p className="text-sm text-gray-300">{result}</p>
+      <p className="text-sm text-gray-400">{result}</p>
       {result && (
         <div>
           <QuestionMarkCircle
@@ -76,11 +76,11 @@ const AutoSave: React.FC<{ debounceMs: number }> = ({ debounceMs }) => {
           <ReactTooltip
             id="about"
             place="bottom"
-            type="dark"
+            type="light"
             effect="solid"
             aria-haspopup
           >
-            📀 &nbsp; Contest Pug auto-saves your work!
+            💾 &nbsp; Contest Pug auto-saves your work!
           </ReactTooltip>
         </div>
       )}
@@ -214,8 +214,9 @@ export const EditModal: React.FC<{ id: string; index: number }> = ({
                         as="select"
                         className="form-select block bg-gray-800 border border-gray-700 w-44 rounded"
                       >
-                        <option value="text">Free Response</option>
+                        <option value="text">Short Answer</option>
                         <option value="rich_text">Rich Text</option>
+                        <option value="radio">Multiple Choice</option>
                       </Field>
                     </div>
                   </div>

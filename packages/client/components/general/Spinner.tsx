@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Loading: React.FC<{ size?: number }> = ({ size = 5 }) => {
+export const Spinner: React.FC<{ size?: number }> = ({ size = 5 }) => {
   return (
     <div>
       <svg

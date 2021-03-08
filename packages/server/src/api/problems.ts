@@ -80,6 +80,21 @@ router.put("/update", isAuth(), async (req: any, res, next) => {
   }
 });
 
+router.post("/new-answer/:id", isAuth(), async (req: any, res, next) => {
+  try {
+    const answer = await getConnection().query(
+      `
+      UPDATE problem SET answers = array_append(answers, $1) WHERE id = $2
+      `,
+      [req.body, req.params.id]
+    );
+    return answer;
+  } catch (error) {
+    console.error(error);
+    next(createHttpError(400, error));
+  }
+});
+
 router.delete("/:id", isAuth(), async (req: any, res, next) => {
   try {
     await getConnection().query(

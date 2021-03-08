@@ -26,24 +26,6 @@ interface RichTextProps {
 const linkifyPlugin = createLinkifyPlugin();
 export const { styles, customStyleFn, exporter } = createStyles(["font-size"]);
 
-export const fontSizes = [
-  8,
-  10,
-  12,
-  14,
-  16,
-  18,
-  20,
-  24,
-  28,
-  32,
-  38,
-  46,
-  54,
-  62,
-  72,
-];
-
 export const RichText: React.FC<RichTextProps> = ({
   placeholder = "Example...",
   editorState,
@@ -187,4 +169,22 @@ const inlineStyles = [
   { label: "bold", style: "BOLD" },
   { label: "italic", style: "ITALIC" },
   { label: "underline", style: "UNDERLINE" },
+];
+
+export const fontSizes = [
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  24,
+  28,
+  32,
+  38,
+  46,
+  54,
+  62,
+  72,
 ];

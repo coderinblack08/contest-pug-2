@@ -79,6 +79,18 @@ router.put("/update", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, v
         next(http_errors_1.default(400, error));
     }
 }));
+router.post("/new-answer/:id", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const answer = yield typeorm_1.getConnection().query(`
+      UPDATE problem SET answers = array_append(answers, $1) WHERE id = $2
+      `, [req.body, req.params.id]);
+        return answer;
+    }
+    catch (error) {
+        console.error(error);
+        next(http_errors_1.default(400, error));
+    }
+}));
 router.delete("/:id", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield typeorm_1.getConnection().query(`

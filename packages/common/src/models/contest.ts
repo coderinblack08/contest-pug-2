@@ -6,23 +6,4 @@ export const contestSchema = Yup.object({
   email: Yup.string().email().max(255),
   description: Yup.string().min(20).max(10000).required(),
   instruction: Yup.string().max(255),
-  form: Yup.array().of(
-    Yup.object().shape({
-      question: Yup.string()
-        .max(200, "Label must be at most 25 characters")
-        .required("Label is a required field"),
-      type: Yup.string()
-        .oneOf([
-          "text",
-          "number",
-          "datetime-local",
-          "date",
-          "time",
-          "checkbox",
-          "telephone",
-        ])
-        .required(),
-      required: Yup.bool().required(),
-    })
-  ),
 });

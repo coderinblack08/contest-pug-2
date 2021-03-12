@@ -2,7 +2,7 @@ import { LinkOutline, MailOutline, UsersOutline } from "heroicons-react";
 import { GetServerSideProps, NextPage } from "next";
 import React from "react";
 import { useQuery } from "react-query";
-import { JoinModal } from "../../components/contest/JoinModal";
+import { JoinButton } from "../../components/contest/JoinButton";
 import { Tabs } from "../../components/contest/Tabs";
 import { Layout } from "../../components/general/Layout";
 import { Link } from "../../components/general/Link";
@@ -28,7 +28,7 @@ const ContestPage: NextPage<Props> = ({ slug }) => {
             <Tabs slug={slug} />
             <header className="flex items-end justify-between w-full mt-6">
               <h1 className="text-xl font-bold">{contest?.name}</h1>
-              {!contest?.isOwner && <JoinModal slug={slug} />}
+              {!contest?.isOwner && <JoinButton slug={slug} />}
             </header>
             <p className="mt-4 text-gray-300">{contest?.description}</p>
             <div className="flex items-center space-x-5 mt-5">

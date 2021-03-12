@@ -37,14 +37,6 @@ __decorate([
     __metadata("design:type", Object)
 ], Contest.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column("text", { nullable: true }),
-    __metadata("design:type", String)
-], Contest.prototype, "instructions", void 0);
-__decorate([
-    typeorm_1.Column("jsonb"),
-    __metadata("design:type", Array)
-], Contest.prototype, "form", void 0);
-__decorate([
     typeorm_1.Column("int", { default: 0 }),
     __metadata("design:type", Number)
 ], Contest.prototype, "competitors", void 0);

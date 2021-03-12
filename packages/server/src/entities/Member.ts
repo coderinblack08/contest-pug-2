@@ -1,6 +1,5 @@
 import {
   BaseEntity,
-  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -16,9 +15,6 @@ export class Member extends BaseEntity {
 
   @PrimaryColumn()
   userId: string;
-
-  @Column("jsonb")
-  response: Record<string, string | number | boolean | null>;
 
   @ManyToOne(() => Contest, (u) => u.members, { onDelete: "CASCADE" })
   @JoinColumn({ name: "contestId" })

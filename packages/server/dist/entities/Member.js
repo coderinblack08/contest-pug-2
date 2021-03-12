@@ -24,10 +24,6 @@ __decorate([
     __metadata("design:type", String)
 ], Member.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column("jsonb"),
-    __metadata("design:type", Object)
-], Member.prototype, "response", void 0);
-__decorate([
     typeorm_1.ManyToOne(() => Contest_1.Contest, (u) => u.members, { onDelete: "CASCADE" }),
     typeorm_1.JoinColumn({ name: "contestId" }),
     __metadata("design:type", Promise)

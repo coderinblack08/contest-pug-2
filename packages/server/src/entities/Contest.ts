@@ -30,12 +30,6 @@ export class Contest extends BaseEntity {
   @Column("text", { nullable: true })
   description: string | null;
 
-  @Column("text", { nullable: true })
-  instructions: string;
-
-  @Column("jsonb")
-  form: { question: string; type: string; required: boolean }[];
-
   @Column("int", { default: 0 })
   competitors: number;
 

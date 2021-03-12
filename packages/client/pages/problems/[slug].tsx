@@ -1,11 +1,4 @@
-import {
-  ContentState,
-  convertFromHTML,
-  convertFromRaw,
-  convertToRaw,
-  EditorState,
-} from "draft-js";
-import { stateToHTML } from "draft-js-export-html";
+import { ContentState, convertFromHTML, convertToRaw } from "draft-js";
 import { Form, Formik } from "formik";
 import { PlusOutline, TemplateOutline, TrashOutline } from "heroicons-react";
 import { LexoRank } from "lexorank";
@@ -14,13 +7,12 @@ import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ArrowContainer, Popover } from "react-tiny-popover";
+import { EditModal } from "../../components/contest/EditModal";
 import { Tabs } from "../../components/contest/Tabs";
 import { Button } from "../../components/form/Button";
-import { exporter } from "../../components/form/RichText";
 import { Layout } from "../../components/general/Layout";
-import { Spinner } from "../../components/general/Spinner";
 import { Navbar } from "../../components/general/Navbar";
-import { EditModal } from "../../components/problem/EditModal";
+import { Spinner } from "../../components/general/Spinner";
 import { Problem } from "../../types";
 import { mutator } from "../../utils/mutator";
 import { rawToHtml } from "../../utils/RichText/rawToHtml";

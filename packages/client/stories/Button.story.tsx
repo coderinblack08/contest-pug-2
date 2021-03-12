@@ -3,16 +3,16 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import { Button, ButtonProps } from "../components/form/Button";
 
 export default {
-  title: "Example/Button",
-  component: Button,
+  title: "Button",
   argTypes: {
-    backgroundColor: { control: "color" },
+    onClick: { action: "clicked" },
   },
 } as Meta;
 
 const Template: Story<ButtonProps> = (args) => <Button {...args} />;
 
-export const Primary = Template.bind({});
-Primary.args = {
+export const Main = Template.bind({});
+
+Main.args = {
   children: "Hello",
 };

@@ -28,7 +28,6 @@ router.post("/join", isAuth_1.isAuth(), (req, res, next) => __awaiter(void 0, vo
         yield Member_1.Member.insert({
             contestId: req.body.contestId,
             userId: req.userId,
-            response: req.body.response,
         });
         yield typeorm_1.getConnection()
             .getRepository(Contest_1.Contest)

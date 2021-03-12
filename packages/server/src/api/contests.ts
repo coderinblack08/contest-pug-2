@@ -16,7 +16,6 @@ router.post("/join", isAuth(), async (req: any, res, next) => {
     await Member.insert({
       contestId: req.body.contestId,
       userId: req.userId,
-      response: req.body.response,
     });
     await getConnection()
       .getRepository(Contest)

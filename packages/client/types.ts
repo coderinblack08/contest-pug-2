@@ -38,8 +38,6 @@ export interface FormikContest {
   website?: string;
   email?: string;
   description: string;
-  instructions?: string;
-  form: FormQuestion[];
 }
 
 export interface Contest extends FormikContest {

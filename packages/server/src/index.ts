@@ -9,6 +9,8 @@ import { __port__, __prod__ } from "./constants";
 import { Hello } from "./resolvers/Hello";
 import { join } from "path";
 import cors from "cors";
+import { User } from "./entities/User";
+import { createTokens } from "./utils/createTokens";
 require("dotenv-safe").config();
 
 const main = async () => {

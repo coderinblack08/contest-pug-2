@@ -23,6 +23,8 @@ const constants_1 = require("./constants");
 const Hello_1 = require("./resolvers/Hello");
 const path_1 = require("path");
 const cors_1 = __importDefault(require("cors"));
+const User_1 = require("./entities/User");
+const createTokens_1 = require("./utils/createTokens");
 require("dotenv-safe").config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const conn = yield typeorm_1.createConnection({
@@ -63,7 +65,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         console.log(profile);
         try {
-            let user = yield User.findOne({ where: { googleId: profile.id } });
+            let user = yield User_1.User.findOne({ where: { googleId: profile.id } });
             const data = {
                 googleAccessToken,
                 googleRefreshToken,
@@ -75,12 +77,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 username: profile.name ? Object.values(profile.name).join(" ") : null,
             };
             if (user) {
-                yield User.update(user.id, data);
+                yield User_1.User.update(user.id, data);
             }
             else {
-                user = yield User.create(data).save();
+                user = yield User_1.User.create(data).save();
             }
-            cb(undefined, createTokens(user));
+            cb(undefined, createTokens_1.createTokens(user));
         }
         catch (err) {
             cb(new Error("Internal Error"));

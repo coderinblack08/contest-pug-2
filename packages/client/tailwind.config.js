@@ -1,9 +1,41 @@
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   darkMode: false,
   theme: {
+    minWidth: {
+      none: "none",
+      0: "0rem",
+      xs: "20rem",
+      sm: "24rem",
+      md: "28rem",
+      lg: "32rem",
+      xl: "36rem",
+      "2xl": "42rem",
+      "3xl": "48rem",
+      "4xl": "56rem",
+      "5xl": "64rem",
+      "6xl": "72rem",
+      "7xl": "80rem",
+      full: "100%",
+      min: "min-content",
+      max: "max-content",
+    },
+    animation: {
+      "spin-fast": "spin .75s linear infinite",
+    },
     fontFamily: {
-      body: ["Inter", "system-ui", "sans-serif"],
+      body: [
+        "Inter",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif",
+      ],
       display: ["Eudoxus Sans", "system-ui", "sans-serif"],
     },
     colors: {
@@ -12,17 +44,16 @@ module.exports = {
       black: "#090808",
       slate: { light: "#8C8CA1", dark: "#3E4E6B" },
       gray: {
-        50: "#F9F9F9",
-        100: "#E7E7E7",
-        200: "#C9C9C9",
-        300: "#ACACAF",
-        400: "#818187",
-        500: "#656570",
-        600: "#4B4B53",
-        700: "#353539",
-        800: "#29292D",
-        900: "#1B1B1E",
-        1000: "#0B0B0C",
+        50: "#F9FAFB",
+        100: "#F4F4F5",
+        200: "#E4E4E7",
+        300: "#D4D4D8",
+        400: "#A1A1AA",
+        500: "#737881",
+        600: "#5A5F66",
+        700: "#40454E",
+        800: "#262A31",
+        900: "#1B1E23",
       },
       primary: {
         100: "#EDF3FF",
@@ -42,12 +73,11 @@ module.exports = {
         600: "#DD2D2D",
         700: "#CC1F1F",
       },
+      indigo: colors.indigo,
     },
   },
   variants: {
-    extend: {
-      ringColor: ["hover"],
-    },
+    extend: {},
   },
   plugins: [],
 };

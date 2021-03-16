@@ -1,8 +1,8 @@
 import { Story } from "@storybook/react";
-import { LogoutOutline } from "heroicons-react";
+import { ChevronDown } from "heroicons-react";
 import React from "react";
 import { Button } from "../components/Button";
-import { Dropdown, DropdownItem } from "../components/Dropdown";
+import { Dropdown, DropdownDivider, DropdownItem, DropdownLabel } from "../components/Dropdown";
 
 export default {
   title: "Dropdown",
@@ -11,12 +11,12 @@ export default {
 
 const TheDropdown: Story = () => {
   return (
-    <Dropdown openButton={<Button>Open</Button>}>
+    <Dropdown openButton={<Button suffix={<ChevronDown size={18} />}>Open</Button>}>
+      <DropdownLabel>Info</DropdownLabel>
       <DropdownItem>Preferences</DropdownItem>
       <DropdownItem>Account</DropdownItem>
-      <DropdownItem prefix={<LogoutOutline size={20} />} spacing={1}>
-        Logout
-      </DropdownItem>
+      <DropdownDivider />
+      <DropdownItem>Logout</DropdownItem>
     </Dropdown>
   );
 };

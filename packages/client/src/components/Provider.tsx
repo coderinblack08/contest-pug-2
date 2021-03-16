@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { useTokenStore } from "../store/auth";
-import queryString from "query-string";
 import { useRouter } from "next/router";
+import queryString from "query-string";
+import React, { useEffect } from "react";
 import { LandingPage } from "../screens/LandingPage";
+import { useTokenStore } from "../store/auth";
 
 export const Provider: React.FC = ({ children }) => {
-  const hasTokens = useTokenStore((s) => !!s.accessToken && !!s.refreshToken);
+  const tokens = useTokenStore((s) => !!s.accessToken && !!s.refreshToken);
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const Provider: React.FC = ({ children }) => {
     }
   }, [router]);
 
-  if (!hasTokens) {
+  if (!tokens) {
     return <LandingPage />;
   }
 

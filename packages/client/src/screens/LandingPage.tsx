@@ -11,26 +11,16 @@ export const LandingPage: React.FC = () => {
         <Navbar />
         <header className="flex flex-col-reverse md:flex-row items-center px-5 mx-auto">
           <div className="flex flex-col space-y-5 md:space-y-6 mt-10 md:mt-0 max-w-lg md:max-w-xl">
-            <div className="space-y-3">
-              <h1
-                className="text-navy font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
-                style={{ letterSpacing: "-2px" }}
-              >
-                Host Competitions
-              </h1>
-              <h1
-                className="text-primary-500 font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
-                style={{ letterSpacing: "-2px" }}
-              >
-                Without the Hassle
-              </h1>
-            </div>
-            <p className="text-slate-dark">
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl md:space-y-1 lg:space-y-2">
+              <div className="text-navy font-display">Host Competitions</div>
+              <div className="text-primary-500 font-display">Without the Hassle</div>
+            </h1>
+            <p className="text-slate-dark text-sm sm:text-base">
               It’s just the smarter way to host online competitions. Create, publish, and grade 10x
-              faster with Contest Pug.
+              faster with Contest Pug with amazing ergonomics.
             </p>
             <div className="flex space-x-2">
-              <Button suffix={<ChevronRightOutline size={16} />} spacing={4} rounded>
+              <Button right={<ChevronRightOutline size={16} />} spacing={4} rounded>
                 Start Creating
               </Button>
               <Button colors="text-primary-500 bg-white shadow" rounded secondary>

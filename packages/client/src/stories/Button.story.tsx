@@ -23,7 +23,7 @@ Secondary.args = {
 };
 
 Icon.args = {
-  prefix: <EmojiHappyOutline size={20} />,
+  left: <EmojiHappyOutline size={20} />,
 };
 
 Icon.argTypes = Secondary.argTypes = Primary.argTypes = {

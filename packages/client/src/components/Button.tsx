@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { Spinner } from "./Spinner";
 
@@ -31,9 +32,10 @@ type ButtonProps = React.DetailedHTMLProps<
   secondary?: boolean;
   loading?: boolean;
   rounded?: boolean;
-  prefix?: React.ReactNode;
-  suffix?: React.ReactNode;
+  left?: React.ReactNode | JSX.Element;
+  right?: React.ReactNode | JSX.Element;
   spacing?: 1 | 2 | 4 | 6;
+  href?: string;
 };
 
 const spaces = {
@@ -48,11 +50,12 @@ export const Button: React.FC<ButtonProps> = ({
   color = "primary",
   secondary = false,
   loading = false,
-  prefix,
-  suffix,
+  left,
+  right,
   spacing = 1,
   className,
   rounded,
+  href,
   colors,
   children,
   ...props
@@ -65,7 +68,7 @@ export const Button: React.FC<ButtonProps> = ({
     return variants[secondary ? "secondary" : "primary"];
   };
 
-  return (
+  const baseButton = (
     <button
       className={`inline-flex items-center justify-center transition focus:outline-none font-medium focus:ring-2 ${
         ButtonTheme.sizes[size]
@@ -74,10 +77,18 @@ export const Button: React.FC<ButtonProps> = ({
     >
       {loading && <Spinner className="absolute" size={size === "sm" ? 2 : 4} />}
       <div className={`flex items-center ${loading && "opacity-0"}`}>
-        {prefix && <div className={spacing && spaces[spacing].prefix}>{prefix}</div>}
+        {left && <div className={spacing && spaces[spacing].prefix}>{left}</div>}
         {children}
-        {suffix && <div className={spacing && spaces[spacing].suffix}>{suffix}</div>}
+        {right && <div className={spacing && spaces[spacing].suffix}>{right}</div>}
       </div>
     </button>
   );
+  if (href) {
+    const isExternal = href.startsWith("http");
+    if (isExternal) {
+      return <a href={href}>{baseButton}</a>;
+    }
+    return <Link href={href}>{baseButton}</Link>;
+  }
+  return baseButton;
 };

@@ -39,14 +39,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     app.use(passport_1.default.initialize());
     app.use(cors_1.default({
-        origin: "*",
+        origin: "http://localhost:3000",
         maxAge: constants_1.__prod__ ? 86400 : undefined,
-        exposedHeaders: [
-            "access-token",
-            "refresh-token",
-            "content-type",
-            "content-length",
-        ],
+        exposedHeaders: ["access-token", "refresh-token", "content-type", "content-length"],
+        credentials: true,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
@@ -70,9 +66,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 googleAccessToken,
                 googleRefreshToken,
                 googleId: profile.id,
-                profilePicture: ((_a = profile.photos) === null || _a === void 0 ? void 0 : _a[0].value) ||
-                    profile._json.avatar_url ||
-                    "",
+                profilePicture: ((_a = profile.photos) === null || _a === void 0 ? void 0 : _a[0].value) || profile._json.avatar_url || "",
                 other: profile._json,
                 username: profile.name ? Object.values(profile.name).join(" ") : null,
             };

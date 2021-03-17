@@ -1,6 +1,7 @@
 import { AppProps } from "next/app";
-import React from "react";
 import Head from "next/head";
+import React from "react";
+import { Provider } from "../components/Provider";
 import "../styles/globals.css";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -10,13 +11,22 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <link
           rel="preload"
-          href="/fonts/EudoxusSans.woff2"
+          href="/fonts/eudoxus-var.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/inter-var-latin.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
         />
       </Head>
-      <Component {...pageProps} />
+      <Provider>
+        <Component {...pageProps} />
+      </Provider>
     </div>
   );
 }

@@ -31,14 +31,10 @@ const main = async () => {
 
   app.use(
     cors({
-      origin: "*",
+      origin: "http://localhost:3000",
       maxAge: __prod__ ? 86400 : undefined,
-      exposedHeaders: [
-        "access-token",
-        "refresh-token",
-        "content-type",
-        "content-length",
-      ],
+      exposedHeaders: ["access-token", "refresh-token", "content-type", "content-length"],
+      credentials: true,
     })
   );
 
@@ -68,10 +64,7 @@ const main = async () => {
           googleAccessToken, // 1 hour expiration
           googleRefreshToken,
           googleId: profile.id,
-          profilePicture:
-            profile.photos?.[0].value ||
-            (profile._json as any).avatar_url ||
-            "",
+          profilePicture: profile.photos?.[0].value || (profile._json as any).avatar_url || "",
           other: profile._json,
           username: profile.name ? Object.values(profile.name).join(" ") : null,
         };

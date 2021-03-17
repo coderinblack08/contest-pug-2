@@ -1,12 +1,13 @@
 import React from "react";
-import { Provider } from "../components/Provider";
+import { Layout } from "../components/Layout";
+import { withApollo } from "../utils/withApollo";
 
 const Dashboard: React.FC = () => {
   return (
-    <Provider>
+    <Layout>
       <h1>Hello World!</h1>
-    </Provider>
+    </Layout>
   );
 };
 
-export default Dashboard;
+export default withApollo({ ssr: true })(Dashboard);

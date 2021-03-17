@@ -1,35 +1,56 @@
 import { Menu } from "@headlessui/react";
+import { Placement } from "@popperjs/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "heroicons-react";
 import React from "react";
 import { PropsOf } from "../types";
+import { usePopper } from "../utils/usePopper";
 
 interface DropdownProps {
   children: React.ReactChild | React.ReactChild[];
   openButton: React.ReactNode;
+  placement?: Placement;
+  expand?: boolean;
+  offset?: [number, number];
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ openButton, children }) => {
+export const Dropdown: React.FC<DropdownProps> = ({
+  openButton,
+  children,
+  expand,
+  placement = "bottom-start",
+  offset = [0, 0],
+}) => {
+  const [trigger, container] = usePopper({
+    placement: placement,
+    strategy: "fixed",
+    modifiers: [{ name: "offset", options: { offset } }],
+  });
+
   return (
-    <div className="relative inline-block text-left">
+    <div className={`inline-block text-left ${expand && "w-full"}`}>
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="focus:outline-none">{openButton}</Menu.Button>
-            <AnimatePresence>
-              {open && (
-                <Menu.Items
-                  as={motion.div}
-                  initial={{ opacity: 0, y: 0 }}
-                  animate={{ opacity: 1, y: "0.5rem" }}
-                  exit={{ opacity: 0, y: 0 }}
-                  className="absolute left-0 w-56 py-2 bg-white border border-gray-100 rounded-xl shadow-lg outline-none opacity-0"
-                  static
-                >
-                  {children}
-                </Menu.Items>
-              )}
-            </AnimatePresence>
+            <Menu.Button ref={trigger} as="div" className={expand ? "w-full" : undefined}>
+              {openButton}
+            </Menu.Button>
+            <div ref={container}>
+              <AnimatePresence>
+                {open && (
+                  <Menu.Items
+                    as={motion.div}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: "0.5rem" }}
+                    exit={{ opacity: 0, y: 0 }}
+                    className="w-56 py-2 bg-white border border-gray-100 rounded-xl shadow-lg outline-none opacity-0"
+                    static
+                  >
+                    {children}
+                  </Menu.Items>
+                )}
+              </AnimatePresence>
+            </div>
           </>
         )}
       </Menu>

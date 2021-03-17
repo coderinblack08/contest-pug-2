@@ -9,9 +9,11 @@ export default {
   argTypes: {},
 };
 
+// popper doesn't work in storybook
+
 const TheDropdown: Story = () => {
   return (
-    <Dropdown openButton={<Button suffix={<ChevronDown size={18} />}>Open</Button>}>
+    <Dropdown openButton={<Button right={<ChevronDown size={18} />}>Open</Button>}>
       <DropdownLabel>Info</DropdownLabel>
       <DropdownItem>Preferences</DropdownItem>
       <DropdownItem>Account</DropdownItem>

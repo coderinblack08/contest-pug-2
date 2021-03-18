@@ -6,7 +6,7 @@ import { Navbar } from "../components/Navbar";
 
 export const LandingPage: React.FC = () => {
   return (
-    <main style={{ backgroundColor: "#F8FAFF" }}>
+    <main className="bg-[#F8FAFF]">
       <div className="h-screen max-w-6xl mx-auto">
         <Navbar />
         <header className="flex flex-col-reverse md:flex-row items-center px-5 mx-auto">

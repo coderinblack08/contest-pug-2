@@ -1,4 +1,6 @@
 import {
+  Adjustments,
+  AdjustmentsOutline,
   ChartSquareBar,
   ChartSquareBarOutline,
   Chat,
@@ -52,6 +54,14 @@ const links = {
       active: <Chat size={20} className="mr-2.5" />,
     },
   },
+  integrations: {
+    name: "Integrations",
+    url: "/integrations",
+    icon: {
+      normal: <AdjustmentsOutline size={20} className="mr-2.5" />,
+      active: <Adjustments size={20} className="mr-2.5" />,
+    },
+  },
 };
 
 const SidebarLink: React.FC<{ name: keyof typeof links; active?: boolean }> = ({
@@ -61,9 +71,8 @@ const SidebarLink: React.FC<{ name: keyof typeof links; active?: boolean }> = ({
   return (
     <Link href={links[name].url}>
       <a
-        style={{ fontSize: 16 }}
-        className={`flex items-center rounded-full font-medium tracking-tight font-display ${
-          active ? "bg-primary-100 text-primary-500" : "text-slate-dark"
+        className={`flex items-center rounded-full tracking-tight font-display text-[15.5px] ${
+          active ? "bg-primary-100 text-primary-500 font-medium" : "text-slate-dark"
         } px-5 py-3`}
       >
         {links[name].icon[active ? "active" : "normal"]}
@@ -77,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   const cache = useApolloClient();
 
   return (
-    <nav className="flex flex-col justify-between px-5 py-8 max-w-xs w-full h-full">
+    <nav className="hidden md:flex flex-col justify-between px-5 py-8 md:max-w-72 lg:max-w-xs w-full h-full">
       <div>
         <Link href="/">
           <a>
@@ -89,6 +98,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           <SidebarLink name="explore" />
           <SidebarLink name="competitions" />
           <SidebarLink name="messages" />
+          <SidebarLink name="integrations" />
         </div>
       </div>
       <Dropdown openButton={<Avatar />} offset={[0, 16]} placement="top-start" expand>

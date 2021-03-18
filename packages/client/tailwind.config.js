@@ -1,26 +1,17 @@
 const colors = require("tailwindcss/colors");
 
 module.exports = {
-  purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  purge: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/screens/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+  ],
   darkMode: false,
   theme: {
-    minWidth: {
-      none: "none",
-      0: "0rem",
-      xs: "20rem",
-      sm: "24rem",
-      md: "28rem",
-      lg: "32rem",
-      xl: "36rem",
-      "2xl": "42rem",
-      "3xl": "48rem",
-      "4xl": "56rem",
-      "5xl": "64rem",
-      "6xl": "72rem",
-      "7xl": "80rem",
-      full: "100%",
-      min: "min-content",
-      max: "max-content",
+    extend: {
+      maxWidth: {
+        72: "288px",
+      },
     },
     animation: {
       "spin-fast": "spin .75s linear infinite",

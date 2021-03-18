@@ -17,11 +17,11 @@ export const Provider: React.FC = ({ children }) => {
       params.refreshToken
     ) {
       const { accessToken, refreshToken } = params;
-      router.replace("/", undefined, { shallow: true });
       useTokenStore.getState().setTokens({
         accessToken,
         refreshToken,
       });
+      router.replace("/", undefined, { shallow: true });
     }
   }, [router]);
 

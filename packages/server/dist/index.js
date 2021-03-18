@@ -12,18 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
+const apollo_server_express_1 = require("apollo-server-express");
+const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const passport_1 = __importDefault(require("passport"));
-const typeorm_1 = require("typeorm");
-const type_graphql_1 = require("type-graphql");
-const apollo_server_express_1 = require("apollo-server-express");
 const passport_google_oauth20_1 = require("passport-google-oauth20");
-const constants_1 = require("./constants");
-const Hello_1 = require("./resolvers/Hello");
 const path_1 = require("path");
-const cors_1 = __importDefault(require("cors"));
+require("reflect-metadata");
+const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("typeorm");
+const constants_1 = require("./constants");
 const User_1 = require("./entities/User");
+const HelloResolver_1 = require("./resolvers/HelloResolver");
+const UserResolver_1 = require("./resolvers/UserResolver");
 const createTokens_1 = require("./utils/createTokens");
 require("dotenv-safe").config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,7 +47,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [Hello_1.Hello],
+            resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({ req, res }),
@@ -68,12 +69,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 googleId: profile.id,
                 profilePicture: ((_a = profile.photos) === null || _a === void 0 ? void 0 : _a[0].value) || profile._json.avatar_url || "",
                 other: profile._json,
-                username: profile.name ? Object.values(profile.name).join(" ") : null,
+                username: profile.displayName,
             };
             if (user) {
                 yield User_1.User.update(user.id, data);
             }
             else {
+                data.displayName = profile.displayName;
                 user = yield User_1.User.create(data).save();
             }
             cb(undefined, createTokens_1.createTokens(user));

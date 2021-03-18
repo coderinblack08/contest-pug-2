@@ -1,15 +1,16 @@
-import "reflect-metadata";
+import { ApolloServer } from "apollo-server-express";
+import cors from "cors";
 import express from "express";
 import passport from "passport";
-import { createConnection } from "typeorm";
-import { buildSchema } from "type-graphql";
-import { ApolloServer } from "apollo-server-express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { __port__, __prod__ } from "./constants";
-import { Hello } from "./resolvers/Hello";
 import { join } from "path";
-import cors from "cors";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { __port__, __prod__ } from "./constants";
 import { User } from "./entities/User";
+import { HelloResolver } from "./resolvers/HelloResolver";
+import { UserResolver } from "./resolvers/UserResolver";
 import { createTokens } from "./utils/createTokens";
 require("dotenv-safe").config();
 
@@ -40,7 +41,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [Hello],
+      resolvers: [HelloResolver, UserResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),
@@ -66,11 +67,12 @@ const main = async () => {
           googleId: profile.id,
           profilePicture: profile.photos?.[0].value || (profile._json as any).avatar_url || "",
           other: profile._json,
-          username: profile.name ? Object.values(profile.name).join(" ") : null,
+          username: profile.displayName,
         };
         if (user) {
           await User.update(user.id, data);
         } else {
+          data.displayName = profile.displayName;
           user = await User.create(data).save();
         }
         cb(undefined, createTokens(user));

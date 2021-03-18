@@ -4,14 +4,14 @@ import { Spinner } from "./Spinner";
 
 export const ButtonTheme = {
   iconSizes: {
-    sm: "p-2 rounded-md",
-    md: "p-3 rounded-md",
-    lg: "p-5 rounded-md",
+    sm: "p-2",
+    md: "p-3",
+    lg: "p-5",
   },
   sizes: {
-    sm: "px-4 py-2 text-xs rounded-md",
-    md: "px-5 py-2.5 text-sm rounded-md",
-    lg: "px-8 py-2.5 text-base rounded-md",
+    sm: "px-4 py-2 text-xs",
+    md: "px-5 py-2.5 text-sm",
+    lg: "px-8 py-2.5 text-base",
   },
   colors: {
     default: "bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 focus:ring-gray-100",
@@ -44,7 +44,7 @@ type ButtonProps = React.DetailedHTMLProps<
   href?: string;
 };
 
-const spaces = {
+export const spaces = {
   1: { prefix: "mr-1.5", suffix: "ml-1.5" },
   2: { prefix: "mr-2", suffix: "ml-2" },
   4: { prefix: "mr-4", suffix: "ml-4" },
@@ -79,7 +79,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       className={`inline-flex items-center justify-center transition focus:outline-none font-medium focus:ring-2 ${
         ButtonTheme[icon ? "iconSizes" : "sizes"][size]
-      } ${colors ? colors : getColor()} ${className} ${rounded && "rounded-full"}`}
+      } ${colors ? colors : getColor()} ${className} ${rounded ? "rounded-full" : "rounded-md"}`}
       {...props}
     >
       {loading && <Spinner className="absolute" size={size === "sm" ? 2 : 4} />}

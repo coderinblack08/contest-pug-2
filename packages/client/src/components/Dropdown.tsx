@@ -5,6 +5,7 @@ import { ChevronRight } from "heroicons-react";
 import React from "react";
 import { PropsOf } from "../types";
 import { usePopper } from "../utils/usePopper";
+import { spaces } from "./Button";
 
 interface DropdownProps {
   children: React.ReactChild | React.ReactChild[];
@@ -78,14 +79,14 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
       {({ active }) => (
         <a
           href="#"
-          className={`mx-1.5 flex items-center whitespace-nowrap px-2.5 py-2 rounded-lg text-sm ${
+          className={`mx-1.5 flex items-center px-2.5 py-2 rounded-lg text-sm focus:outline-none ${
             active ? "bg-primary-500 text-white" : "text-gray-600"
           } ${className}`}
         >
-          {prefix && <div className={`mr-${active ? "auto" : spacing}`}>{prefix}</div>}
+          {prefix && <div className={active ? "mr-auto" : spaces[spacing].prefix}>{prefix}</div>}
           {children}
           {(suffix || active) && (
-            <div className={`ml-${active ? "auto" : spacing}`}>
+            <div className={active ? "ml-auto" : spaces[spacing].prefix}>
               {active ? <ChevronRight size={18} /> : suffix}
             </div>
           )}

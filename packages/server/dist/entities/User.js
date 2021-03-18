@@ -10,26 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-const Contest_1 = require("./Contest");
-const Member_1 = require("./Member");
 let User = class User extends typeorm_1.BaseEntity {
 };
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.PrimaryGeneratedColumn("uuid"),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.Column("text"),
     __metadata("design:type", String)
 ], User.prototype, "profilePicture", void 0);
 __decorate([
-    typeorm_1.Column("text", { unique: true, nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "username", void 0);
-__decorate([
+    type_graphql_1.Field(() => String),
     typeorm_1.Column("text", { unique: true }),
     __metadata("design:type", String)
+], User.prototype, "username", void 0);
+__decorate([
+    type_graphql_1.Field(() => String),
+    typeorm_1.Column("text", { unique: true }),
+    __metadata("design:type", String)
+], User.prototype, "displayName", void 0);
+__decorate([
+    typeorm_1.Column("text", { unique: true }),
+    __metadata("design:type", Object)
 ], User.prototype, "googleId", void 0);
 __decorate([
     typeorm_1.Column("text", { nullable: true }),
@@ -48,23 +55,18 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "tokenVersion", void 0);
 __decorate([
-    typeorm_1.OneToMany(() => Contest_1.Contest, (c) => c.creator),
-    __metadata("design:type", Promise)
-], User.prototype, "contests", void 0);
-__decorate([
-    typeorm_1.OneToMany(() => Member_1.Member, (m) => m.user),
-    __metadata("design:type", Promise)
-], User.prototype, "joined", void 0);
-__decorate([
+    type_graphql_1.Field(),
     typeorm_1.UpdateDateColumn({ type: "time with time zone" }),
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.CreateDateColumn({ type: "time with time zone" }),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);
 User = __decorate([
-    typeorm_1.Entity()
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
 ], User);
 exports.User = User;
 //# sourceMappingURL=User.js.map

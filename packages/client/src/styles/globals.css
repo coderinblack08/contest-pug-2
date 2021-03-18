@@ -1,14 +1,17 @@
 @import "./fonts.css";
 
-@import "tailwindcss/base";
-@import "tailwindcss/utilities";;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-p, a, button, span, div {
-  font-family: theme('fontFamily.body');
-  letter-spacing: -0.03em;
-}
+@layer base {
+  p, a, button, span, div {
+    font-family: theme('fontFamily.body');
+    letter-spacing: -0.03em;
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: theme('fontFamily.display');
-  letter-spacing: -0.025em;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: theme('fontFamily.display');
+    letter-spacing: -0.025em;
+  }
 }

@@ -8,7 +8,7 @@ export const Layout: React.FC = ({ children }) => {
   return (
     <div className="flex items-start w-screen h-screen divide-x divide-gray-100">
       <Sidebar path={pathname.replace("/", "")} />
-      <main className="h-full px-8 py-14 w-full">{children}</main>
+      <main className="h-full p-8 w-full">{children}</main>
     </div>
   );
 };

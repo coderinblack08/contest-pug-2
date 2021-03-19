@@ -72,7 +72,7 @@ const SidebarLink: React.FC<{ name: keyof typeof links; active?: boolean }> = ({
     <Link href={links[name].url}>
       <a
         className={`flex items-center rounded-full tracking-tight font-display text-[15.5px] ${
-          active ? "bg-primary-100 text-primary-500 font-medium" : "text-slate-dark"
+          active ? "bg-primary-100 text-primary-500 font-medium" : "text-gray-500"
         } px-5 py-3`}
       >
         {links[name].icon[active ? "active" : "normal"]}
@@ -101,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
           <SidebarLink name="integrations" />
         </div>
       </div>
-      <Dropdown openButton={<Avatar />} offset={[0, 16]} placement="top-start" expand>
+      <Dropdown openButton={<Avatar clickable />} offset={[0, 16]} placement="top-start" expand>
         <DropdownLabel>Info</DropdownLabel>
         <DropdownItem>Account</DropdownItem>
         <DropdownItem>Preferences</DropdownItem>

@@ -17,7 +17,7 @@ export const LandingPage: React.FC = () => {
             </h1>
             <p className="text-slate-dark text-sm sm:text-base">
               It’s just the smarter way to host online competitions. Create, publish, and grade 10x
-              faster with Contest Pug with amazing ergonomics.
+              faster with amazing ergonomics.
             </p>
             <div className="flex space-x-2">
               <Button right={<ChevronRightOutline size={16} />} spacing={4} rounded>
@@ -35,6 +35,7 @@ export const LandingPage: React.FC = () => {
               quality={100}
               src="/working.png"
               alt="Working Illustration"
+              priority
             />
           </div>
         </header>

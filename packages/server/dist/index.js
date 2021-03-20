@@ -42,7 +42,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use(cors_1.default({
         origin: "http://localhost:3000",
         maxAge: constants_1.__prod__ ? 86400 : undefined,
-        exposedHeaders: ["access-token", "refresh-token", "content-type", "content-length"],
+        exposedHeaders: ["access-token", "refresh-token"],
         credentials: true,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({

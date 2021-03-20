@@ -80,7 +80,7 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
         <a
           href="#"
           className={`mx-1.5 flex items-center px-2.5 py-2 rounded-lg text-sm focus:outline-none ${
-            active ? "bg-primary-500 text-white" : "text-gray-600"
+            active ? "bg-gradient-to-b from-primary-400 to-primary-600 text-white" : "text-gray-600"
           } ${className}`}
         >
           {prefix && <div className={active ? "mr-auto" : spaces[spacing].prefix}>{prefix}</div>}

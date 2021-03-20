@@ -9,6 +9,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div>
       <Head>
+        <title>Contest Pug</title>
+        <link rel="shortcut icon" href="/favicons/favicon.ico" type="image/x-icon" />
         <link
           rel="preload"
           href="/fonts/eudoxus-var.woff2"
@@ -23,6 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <Provider>
         <Component {...pageProps} />

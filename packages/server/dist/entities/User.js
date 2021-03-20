@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
+const Contest_1 = require("./Contest");
+const Member_1 = require("./Member");
 let User = class User extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -54,6 +56,14 @@ __decorate([
     typeorm_1.Column("int", { default: 1 }),
     __metadata("design:type", Number)
 ], User.prototype, "tokenVersion", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Contest_1.Contest, (c) => c.creator),
+    __metadata("design:type", Promise)
+], User.prototype, "contests", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Member_1.Member, (m) => m.user),
+    __metadata("design:type", Promise)
+], User.prototype, "joined", void 0);
 __decorate([
     type_graphql_1.Field(),
     typeorm_1.UpdateDateColumn({ type: "time with time zone" }),

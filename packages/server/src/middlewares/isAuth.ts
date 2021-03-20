@@ -7,7 +7,7 @@ import { createTokens } from "../utils/createTokens";
 export const isAuth: MiddlewareFn<MyContext> = async ({ context: { req, res } }, next) => {
   const accessToken = req.headers["access-token"];
   if (!accessToken || typeof accessToken !== "string") {
-    throw new Error("No authorized");
+    throw new Error("Not authorized");
   }
 
   try {
@@ -19,7 +19,7 @@ export const isAuth: MiddlewareFn<MyContext> = async ({ context: { req, res } },
 
   const refreshToken = req.headers["refresh-token"];
   if (typeof refreshToken !== "string") {
-    throw new Error("No authorized");
+    throw new Error("Not authorized");
   }
 
   let data;
@@ -27,13 +27,13 @@ export const isAuth: MiddlewareFn<MyContext> = async ({ context: { req, res } },
     data = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET) as any;
     console.log("refreshToken", data);
   } catch (err) {
-    throw new Error("No authorized");
+    throw new Error("Not authorized");
   }
 
   const user = await User.findOne(data.userId);
 
   if (!user || user.tokenVersion !== data.tokenVersion) {
-    throw new Error("No authorized");
+    throw new Error("Not authorized");
   }
 
   const tokens = createTokens(user);

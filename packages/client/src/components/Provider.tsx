@@ -29,5 +29,5 @@ export const Provider: React.FC = ({ children }) => {
     return <LandingPage />;
   }
 
-  return <>{children}</>;
+  return <div className="antialiased">{children}</div>;
 };

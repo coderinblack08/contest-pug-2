@@ -36,7 +36,7 @@ module.exports = {
       transparent: "transparent",
       slate: { light: "#8C8CA1", dark: "#3E4E6B" },
       gray: {
-        50: "#F9FAFB",
+        50: "#FCFCFA",
         100: "#F4F4F5",
         200: "#E4E4E7",
         300: "#D4D4D8",
@@ -69,7 +69,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      textColor: ["group-focus"],
+    },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/aspect-ratio")],
 };

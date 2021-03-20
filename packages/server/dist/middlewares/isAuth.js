@@ -16,7 +16,7 @@ const createTokens_1 = require("../utils/createTokens");
 const isAuth = ({ context: { req, res } }, next) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = req.headers["access-token"];
     if (!accessToken || typeof accessToken !== "string") {
-        throw new Error("No authorized");
+        throw new Error("Not authorized");
     }
     try {
         const data = jsonwebtoken_1.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -26,7 +26,7 @@ const isAuth = ({ context: { req, res } }, next) => __awaiter(void 0, void 0, vo
     catch (_a) { }
     const refreshToken = req.headers["refresh-token"];
     if (typeof refreshToken !== "string") {
-        throw new Error("No authorized");
+        throw new Error("Not authorized");
     }
     let data;
     try {
@@ -34,11 +34,11 @@ const isAuth = ({ context: { req, res } }, next) => __awaiter(void 0, void 0, vo
         console.log("refreshToken", data);
     }
     catch (err) {
-        throw new Error("No authorized");
+        throw new Error("Not authorized");
     }
     const user = yield User_1.User.findOne(data.userId);
     if (!user || user.tokenVersion !== data.tokenVersion) {
-        throw new Error("No authorized");
+        throw new Error("Not authorized");
     }
     const tokens = createTokens_1.createTokens(user);
     res.setHeader("refresh-token", tokens.refreshToken);

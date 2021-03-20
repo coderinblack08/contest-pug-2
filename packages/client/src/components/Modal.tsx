@@ -18,6 +18,7 @@ export const Modal: React.FC<
           <ReactModal
             shouldCloseOnEsc
             onRequestClose={onRequestClose}
+            ariaHideApp={false}
             style={{
               overlay: {
                 backgroundColor: "rgba(27, 30, 35, 0.8)",

@@ -10,7 +10,6 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Member } from "./Member";
-import { Problem } from "./Problem";
 import { User } from "./User";
 
 @Entity()
@@ -43,8 +42,8 @@ export class Contest extends BaseEntity {
   @OneToMany(() => Member, (m) => m.contest)
   members: Promise<Member[]>;
 
-  @OneToMany(() => Problem, (p) => p.contest)
-  problems: Promise<Problem[]>;
+  // @OneToMany(() => Problem, (p) => p.contest)
+  // problems: Promise<Problem[]>;
 
   @UpdateDateColumn({ type: "time with time zone" })
   updatedAt: Date;

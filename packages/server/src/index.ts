@@ -34,7 +34,7 @@ const main = async () => {
     cors({
       origin: "http://localhost:3000",
       maxAge: __prod__ ? 86400 : undefined,
-      exposedHeaders: ["access-token", "refresh-token", "content-type", "content-length"],
+      exposedHeaders: ["access-token", "refresh-token"],
       credentials: true,
     })
   );

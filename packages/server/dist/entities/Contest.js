@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Contest = void 0;
 const typeorm_1 = require("typeorm");
 const Member_1 = require("./Member");
-const Problem_1 = require("./Problem");
 const User_1 = require("./User");
 let Contest = class Contest extends typeorm_1.BaseEntity {
 };
@@ -53,10 +52,6 @@ __decorate([
     typeorm_1.OneToMany(() => Member_1.Member, (m) => m.contest),
     __metadata("design:type", Promise)
 ], Contest.prototype, "members", void 0);
-__decorate([
-    typeorm_1.OneToMany(() => Problem_1.Problem, (p) => p.contest),
-    __metadata("design:type", Promise)
-], Contest.prototype, "problems", void 0);
 __decorate([
     typeorm_1.UpdateDateColumn({ type: "time with time zone" }),
     __metadata("design:type", Date)

@@ -4,9 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Contest } from "./Contest";
+import { Member } from "./Member";
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
@@ -41,11 +44,11 @@ export class User extends BaseEntity {
   @Column("int", { default: 1 })
   tokenVersion: number;
 
-  // @OneToMany(() => Contest, (c) => c.creator)
-  // contests: Promise<Contest[]>;
+  @OneToMany(() => Contest, (c) => c.creator)
+  contests: Promise<Contest[]>;
 
-  // @OneToMany(() => Member, (m) => m.user)
-  // joined: Promise<Member[]>;
+  @OneToMany(() => Member, (m) => m.user)
+  joined: Promise<Member[]>;
 
   @Field()
   @UpdateDateColumn({ type: "time with time zone" })

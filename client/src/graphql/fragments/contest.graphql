@@ -1,0 +1,11 @@
+fragment ContestFragment on Contest {
+  id
+  name
+  email
+  website
+  description
+  competitors
+  createdAt
+  start
+  end
+}

@@ -1,0 +1,5 @@
+mutation CreateContest($args: ContestArgs!) {
+  createContest(args: $args) {
+    ...ContestFragment
+  }
+}

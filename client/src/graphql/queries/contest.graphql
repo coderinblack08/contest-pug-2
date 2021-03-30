@@ -1,0 +1,12 @@
+query GetContest($id: String!) {
+  getContest(id: $id) {
+    ...ContestFragment
+    isCreator
+    creator {
+      id
+      username
+      profilePicture
+      displayName
+    }
+  }
+}

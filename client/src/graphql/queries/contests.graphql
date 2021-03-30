@@ -1,0 +1,8 @@
+query FindContests($args: PaginationArgs!) {
+  findContests(args: $args) {
+    contests {
+      ...ContestFragment
+    }
+    hasMore
+  }
+}

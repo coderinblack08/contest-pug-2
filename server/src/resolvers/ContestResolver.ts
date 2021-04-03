@@ -1,10 +1,12 @@
+import { isValid } from "date-fns";
 import { Arg, Ctx, Int, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { createQueryBuilder, getConnection } from "typeorm";
-import { isValid } from "date-fns";
 import { Contest } from "../entities/Contest";
+import { Problem } from "../entities/Problem";
 import { isAuth } from "../middlewares/isAuth";
 import { ContestArgs, PaginatedContest } from "../types/graphql/ContestArgs";
 import { PaginationArgs } from "../types/graphql/PaginationArgs";
+import { ProblemArgs, ProblemUpdateArgs } from "../types/graphql/ProblemArgs";
 import { MyContext } from "../types/MyContext";
 
 @Resolver(Contest)
@@ -58,6 +60,7 @@ export class ContestResolver {
     };
   }
 
+  @UseMiddleware(isAuth)
   @Query(() => Contest)
   async getContest(@Arg("id") id: string) {
     const contest: any = await createQueryBuilder("contest", "c")
@@ -66,5 +69,45 @@ export class ContestResolver {
       .getOne();
     contest.isCreator = true;
     return contest;
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => Problem)
+  async createProblem(@Arg("args", () => ProblemArgs) args: ProblemArgs) {
+    console.log(args);
+
+    return Problem.create(args).save();
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => Problem)
+  async updateProblem(
+    @Arg("id", () => Int) id: number,
+    @Arg("args", () => ProblemUpdateArgs) args: ProblemUpdateArgs
+  ) {
+    const result = await getConnection()
+      .createQueryBuilder()
+      .update(Problem)
+      .set(args)
+      .where("id = :id", { id })
+      .returning("*")
+      .execute();
+
+    return result.raw[0];
+  }
+
+  @UseMiddleware(isAuth)
+  @Query(() => [Problem])
+  async findProblems(@Arg("contestId") contestId: string, @Ctx() { req }: MyContext) {
+    return await getConnection().query(
+      `
+      SELECT * FROM problem p
+      WHERE p."contestId" = $1 AND EXISTS (
+        SELECT * FROM contest c WHERE c.id = p."contestId" AND c."creatorId" = $2
+      )
+      ORDER BY p.rank;
+    `,
+      [contestId, req.userId]
+    );
   }
 }

@@ -13,6 +13,7 @@ exports.Contest = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Member_1 = require("./Member");
+const Problem_1 = require("./Problem");
 const User_1 = require("./User");
 let Contest = class Contest extends typeorm_1.BaseEntity {
 };
@@ -67,6 +68,11 @@ __decorate([
     typeorm_1.JoinColumn({ name: "creatorId" }),
     __metadata("design:type", Promise)
 ], Contest.prototype, "creator", void 0);
+__decorate([
+    type_graphql_1.Field(() => [Problem_1.Problem]),
+    typeorm_1.OneToMany(() => Problem_1.Problem, (p) => p.contest),
+    __metadata("design:type", Promise)
+], Contest.prototype, "problems", void 0);
 __decorate([
     type_graphql_1.Field(() => Boolean, { nullable: true }),
     __metadata("design:type", Object)

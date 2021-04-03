@@ -11,6 +11,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Member } from "./Member";
+import { Problem } from "./Problem";
 import { User } from "./User";
 
 @ObjectType()
@@ -56,6 +57,10 @@ export class Contest extends BaseEntity {
   @ManyToOne(() => User, (u) => u.contests, { onDelete: "CASCADE" })
   @JoinColumn({ name: "creatorId" })
   creator: Promise<User>;
+
+  @Field(() => [Problem])
+  @OneToMany(() => Problem, (p) => p.contest)
+  problems: Promise<Problem[]>;
 
   @Field(() => Boolean, { nullable: true })
   isCreator: boolean | null;

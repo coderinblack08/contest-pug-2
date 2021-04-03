@@ -6,7 +6,8 @@
 
 @layer base {
   html {
-    @apply antialiased;
+    @apply antialiased overflow-auto;
+    min-width: 200px;
   }
   p,
   a,
@@ -36,4 +37,16 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+}
+
+.ql-toolbar {
+  @apply rounded-t-lg bg-gray-50;
+}
+
+.ql-container {
+  @apply rounded-b-lg border shadow-sm;
+}
+
+.ql-editor {
+  min-height: 80px;
 }

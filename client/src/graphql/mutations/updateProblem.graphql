@@ -1,0 +1,5 @@
+mutation UpdateProblem($args: ProblemUpdateArgs!, $id: Int!) {
+  updateProblem(args: $args, id: $id) {
+    ...ProblemFragment
+  }
+}

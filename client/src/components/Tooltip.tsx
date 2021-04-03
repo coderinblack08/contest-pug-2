@@ -1,13 +1,20 @@
 import React from "react";
-import ReactTooltip from "react-tooltip";
+import ReactTooltip, { Type } from "react-tooltip";
 
 interface TooltipProps {
   tooltip: string | null;
   tip: string;
   place?: "top" | "bottom" | "left" | "right";
+  type?: Type;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({ children, tip, tooltip, place = "top" }) => {
+export const Tooltip: React.FC<TooltipProps> = ({
+  children,
+  tip,
+  tooltip,
+  type = "dark",
+  place = "top",
+}) => {
   return (
     <>
       <div data-tip data-for={tip}>
@@ -18,7 +25,7 @@ export const Tooltip: React.FC<TooltipProps> = ({ children, tip, tooltip, place 
           id={tip}
           place={place}
           effect="solid"
-          type="dark"
+          type={type}
           className="shadow-2xl font-medium"
         >
           {tooltip}

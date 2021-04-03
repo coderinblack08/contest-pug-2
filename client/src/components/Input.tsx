@@ -2,6 +2,7 @@ import { useField } from "formik";
 import { Search, InfoCircle } from "react-iconly";
 import React, { useState } from "react";
 import { capitalize } from "../utils/capitalize";
+import { Tooltip } from "./Tooltip";
 
 type InputProps = {
   label?: string;
@@ -9,6 +10,7 @@ type InputProps = {
   error?: boolean;
   textarea?: boolean;
   themeSize?: keyof typeof InputTheme.sizes;
+  errorTooltip?: string;
 } & React.ComponentPropsWithoutRef<"input">;
 
 export const InputTheme = {
@@ -28,6 +30,7 @@ export const InputTheme = {
 export const Input: React.FC<InputProps> = ({
   label,
   search,
+  errorTooltip,
   themeSize = "sm",
   onFocus,
   onBlur,
@@ -60,11 +63,16 @@ export const Input: React.FC<InputProps> = ({
       {!!label && (
         <label
           htmlFor={props.name}
-          className={`relative inline text-sm font-medium ${
+          className={`relative inline-flex items-center mb-1 text-sm font-medium ${
             error ? "text-red-500" : focused ? "text-primary-500" : "text-gray-700"
           }`}
         >
           {label}
+          {!!errorTooltip && (
+            <Tooltip tooltip={errorTooltip} tip={props.name + "-error-message"}>
+              <InfoCircle set="bold" size={15} className="ml-1" />
+            </Tooltip>
+          )}
         </label>
       )}
       <div className="relative">
@@ -81,15 +89,24 @@ export const Input: React.FC<InputProps> = ({
   );
 };
 
-export const FormikInput: React.FC<InputProps & { name: string }> = ({ name, ...props }) => {
+export const FormikInput: React.FC<InputProps & { name: string; useTooltip?: boolean }> = ({
+  name,
+  useTooltip,
+  ...props
+}) => {
   const [field, { error, touched }] = useField(name);
 
   return (
     <div className="space-y-1">
-      <Input error={touched && !!error} {...field} {...props} />
-      {touched && !!error ? (
+      <Input
+        error={touched && !!error}
+        errorTooltip={useTooltip && !!error ? error : undefined}
+        {...field}
+        {...props}
+      />
+      {!useTooltip && touched && !!error ? (
         <div className="flex items-center mt-1.5 text-red-500">
-          <InfoCircle set="bold" size={15} className="mr-1" />
+          <InfoCircle set="bold" size={15} className="mr-1 flex-shrink-0" />
           <p className="text-sm">{capitalize(error)}</p>
         </div>
       ) : null}

@@ -10,7 +10,7 @@ export const LoginModal: React.FC = () => {
       <Button onClick={() => setIsOpen(true)} rounded>
         Login
       </Button>
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} width={400}>
+      <Modal width={420} isOpen={isOpen} onRequestClose={() => setIsOpen(false)}>
         <div className="flex flex-col items-center">
           <h2 className="text-2xl font-bold mb-5">Sign into Contest Pug</h2>
           <Button
@@ -28,7 +28,6 @@ export const LoginModal: React.FC = () => {
                 />
               </svg>
             }
-            rounded
           >
             Continue with Google
           </Button>

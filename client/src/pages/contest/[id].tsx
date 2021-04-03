@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Calendar, ChevronUp, People, Unlock, ChevronDown, Setting } from "react-iconly";
 import { Avatar } from "../../components/Avatar";
 import { Layout } from "../../components/Layout";
+import { ProblemsEditor } from "../../components/Problems/ProblemsEditor";
 import { Spinner } from "../../components/Spinner";
 import { useGetContestQuery } from "../../generated/graphql";
 import { useFormatDate } from "../../utils/formatDate";
@@ -135,15 +136,16 @@ const Contest: React.FC = () => {
         {data?.getContest.isCreator && (
           <nav className="flex items-center justify-center md:justify-start shadow-sm py-3 px-5 font-medium text-[15px] space-x-6">
             <Link href="/contest/[id]" as={`/contest/${id}`}>
-              <a className="font-display bg-white px-3 py-1 text-primary-500 rounded-xl shadow focus:outline-none focus:shadow-inner font-semibold">
+              <a className="bg-white px-3 py-1 text-primary-500 rounded-xl shadow focus:outline-none focus:shadow-inner font-semibold">
                 Editor
               </a>
             </Link>
-            <a className="font-display text-gray-600">Grading</a>
-            <a className="font-display text-gray-600">Forum</a>
+            <a className="text-gray-600">Grading</a>
+            <a className="text-gray-600">Forum</a>
           </nav>
         )}
         <ContestInfoBar />
+        <ProblemsEditor id={id as string} />
       </main>
     </Layout>
   );

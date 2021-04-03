@@ -1,0 +1,5 @@
+mutation CreateProblem($args: ProblemArgs!) {
+  createProblem(args: $args) {
+    ...ProblemFragment
+  }
+}

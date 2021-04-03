@@ -21,6 +21,7 @@ export type Query = {
   __typename?: 'Query';
   findContests: PaginatedContest;
   getContest: Contest;
+  findProblems: Array<Problem>;
   hello: Scalars['String'];
   me?: Maybe<User>;
 };
@@ -33,6 +34,11 @@ export type QueryFindContestsArgs = {
 
 export type QueryGetContestArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryFindProblemsArgs = {
+  contestId: Scalars['String'];
 };
 
 export type PaginatedContest = {
@@ -53,6 +59,7 @@ export type Contest = {
   end?: Maybe<Scalars['String']>;
   creatorId: Scalars['String'];
   creator: User;
+  problems: Array<Problem>;
   isCreator?: Maybe<Scalars['Boolean']>;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
@@ -69,6 +76,17 @@ export type User = {
 };
 
 
+export type Problem = {
+  __typename?: 'Problem';
+  id: Scalars['Float'];
+  contestId: Scalars['String'];
+  rank: Scalars['String'];
+  type: Scalars['String'];
+  question: Scalars['String'];
+  points: Scalars['Float'];
+  penalty: Scalars['Float'];
+};
+
 export type PaginationArgs = {
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
@@ -77,11 +95,24 @@ export type PaginationArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   createContest: Contest;
+  createProblem: Problem;
+  updateProblem: Problem;
 };
 
 
 export type MutationCreateContestArgs = {
   args: ContestArgs;
+};
+
+
+export type MutationCreateProblemArgs = {
+  args: ProblemArgs;
+};
+
+
+export type MutationUpdateProblemArgs = {
+  args: ProblemUpdateArgs;
+  id: Scalars['Int'];
 };
 
 export type ContestArgs = {
@@ -93,9 +124,31 @@ export type ContestArgs = {
   end?: Maybe<Scalars['String']>;
 };
 
+export type ProblemArgs = {
+  contestId: Scalars['String'];
+  rank?: Maybe<Scalars['String']>;
+  question: Scalars['String'];
+  type: Scalars['String'];
+  points?: Maybe<Scalars['Int']>;
+  penalty?: Maybe<Scalars['Int']>;
+};
+
+export type ProblemUpdateArgs = {
+  rank?: Maybe<Scalars['String']>;
+  question?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  points?: Maybe<Scalars['Int']>;
+  penalty?: Maybe<Scalars['Int']>;
+};
+
 export type ContestFragmentFragment = (
   { __typename?: 'Contest' }
   & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'description' | 'competitors' | 'createdAt' | 'start' | 'end'>
+);
+
+export type ProblemFragmentFragment = (
+  { __typename?: 'Problem' }
+  & Pick<Problem, 'id' | 'contestId' | 'rank' | 'type' | 'question' | 'points' | 'penalty'>
 );
 
 export type UserFragmentFragment = (
@@ -113,6 +166,33 @@ export type CreateContestMutation = (
   & { createContest: (
     { __typename?: 'Contest' }
     & ContestFragmentFragment
+  ) }
+);
+
+export type CreateProblemMutationVariables = Exact<{
+  args: ProblemArgs;
+}>;
+
+
+export type CreateProblemMutation = (
+  { __typename?: 'Mutation' }
+  & { createProblem: (
+    { __typename?: 'Problem' }
+    & ProblemFragmentFragment
+  ) }
+);
+
+export type UpdateProblemMutationVariables = Exact<{
+  args: ProblemUpdateArgs;
+  id: Scalars['Int'];
+}>;
+
+
+export type UpdateProblemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateProblem: (
+    { __typename?: 'Problem' }
+    & ProblemFragmentFragment
   ) }
 );
 
@@ -170,6 +250,19 @@ export type MeQuery = (
   )> }
 );
 
+export type FindProblemsQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type FindProblemsQuery = (
+  { __typename?: 'Query' }
+  & { findProblems: Array<(
+    { __typename?: 'Problem' }
+    & ProblemFragmentFragment
+  )> }
+);
+
 export const ContestFragmentFragmentDoc = gql`
     fragment ContestFragment on Contest {
   id
@@ -181,6 +274,17 @@ export const ContestFragmentFragmentDoc = gql`
   createdAt
   start
   end
+}
+    `;
+export const ProblemFragmentFragmentDoc = gql`
+    fragment ProblemFragment on Problem {
+  id
+  contestId
+  rank
+  type
+  question
+  points
+  penalty
 }
     `;
 export const UserFragmentFragmentDoc = gql`
@@ -224,6 +328,73 @@ export function useCreateContestMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateContestMutationHookResult = ReturnType<typeof useCreateContestMutation>;
 export type CreateContestMutationResult = Apollo.MutationResult<CreateContestMutation>;
 export type CreateContestMutationOptions = Apollo.BaseMutationOptions<CreateContestMutation, CreateContestMutationVariables>;
+export const CreateProblemDocument = gql`
+    mutation CreateProblem($args: ProblemArgs!) {
+  createProblem(args: $args) {
+    ...ProblemFragment
+  }
+}
+    ${ProblemFragmentFragmentDoc}`;
+export type CreateProblemMutationFn = Apollo.MutationFunction<CreateProblemMutation, CreateProblemMutationVariables>;
+
+/**
+ * __useCreateProblemMutation__
+ *
+ * To run a mutation, you first call `useCreateProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProblemMutation, { data, loading, error }] = useCreateProblemMutation({
+ *   variables: {
+ *      args: // value for 'args'
+ *   },
+ * });
+ */
+export function useCreateProblemMutation(baseOptions?: Apollo.MutationHookOptions<CreateProblemMutation, CreateProblemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProblemMutation, CreateProblemMutationVariables>(CreateProblemDocument, options);
+      }
+export type CreateProblemMutationHookResult = ReturnType<typeof useCreateProblemMutation>;
+export type CreateProblemMutationResult = Apollo.MutationResult<CreateProblemMutation>;
+export type CreateProblemMutationOptions = Apollo.BaseMutationOptions<CreateProblemMutation, CreateProblemMutationVariables>;
+export const UpdateProblemDocument = gql`
+    mutation UpdateProblem($args: ProblemUpdateArgs!, $id: Int!) {
+  updateProblem(args: $args, id: $id) {
+    ...ProblemFragment
+  }
+}
+    ${ProblemFragmentFragmentDoc}`;
+export type UpdateProblemMutationFn = Apollo.MutationFunction<UpdateProblemMutation, UpdateProblemMutationVariables>;
+
+/**
+ * __useUpdateProblemMutation__
+ *
+ * To run a mutation, you first call `useUpdateProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProblemMutation, { data, loading, error }] = useUpdateProblemMutation({
+ *   variables: {
+ *      args: // value for 'args'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateProblemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProblemMutation, UpdateProblemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProblemMutation, UpdateProblemMutationVariables>(UpdateProblemDocument, options);
+      }
+export type UpdateProblemMutationHookResult = ReturnType<typeof useUpdateProblemMutation>;
+export type UpdateProblemMutationResult = Apollo.MutationResult<UpdateProblemMutation>;
+export type UpdateProblemMutationOptions = Apollo.BaseMutationOptions<UpdateProblemMutation, UpdateProblemMutationVariables>;
 export const GetContestDocument = gql`
     query GetContest($id: String!) {
   getContest(id: $id) {
@@ -370,10 +541,46 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export type QueryKeySpecifier = ('findContests' | 'getContest' | 'hello' | 'me' | QueryKeySpecifier)[];
+export const FindProblemsDocument = gql`
+    query FindProblems($contestId: String!) {
+  findProblems(contestId: $contestId) {
+    ...ProblemFragment
+  }
+}
+    ${ProblemFragmentFragmentDoc}`;
+
+/**
+ * __useFindProblemsQuery__
+ *
+ * To run a query within a React component, call `useFindProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindProblemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindProblemsQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useFindProblemsQuery(baseOptions: Apollo.QueryHookOptions<FindProblemsQuery, FindProblemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindProblemsQuery, FindProblemsQueryVariables>(FindProblemsDocument, options);
+      }
+export function useFindProblemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindProblemsQuery, FindProblemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindProblemsQuery, FindProblemsQueryVariables>(FindProblemsDocument, options);
+        }
+export type FindProblemsQueryHookResult = ReturnType<typeof useFindProblemsQuery>;
+export type FindProblemsLazyQueryHookResult = ReturnType<typeof useFindProblemsLazyQuery>;
+export type FindProblemsQueryResult = Apollo.QueryResult<FindProblemsQuery, FindProblemsQueryVariables>;
+export type QueryKeySpecifier = ('findContests' | 'getContest' | 'findProblems' | 'hello' | 'me' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	findContests?: FieldPolicy<any> | FieldReadFunction<any>,
 	getContest?: FieldPolicy<any> | FieldReadFunction<any>,
+	findProblems?: FieldPolicy<any> | FieldReadFunction<any>,
 	hello?: FieldPolicy<any> | FieldReadFunction<any>,
 	me?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -382,7 +589,7 @@ export type PaginatedContestFieldPolicy = {
 	contests?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasMore?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ContestKeySpecifier = ('id' | 'name' | 'email' | 'website' | 'description' | 'competitors' | 'start' | 'end' | 'creatorId' | 'creator' | 'isCreator' | 'updatedAt' | 'createdAt' | ContestKeySpecifier)[];
+export type ContestKeySpecifier = ('id' | 'name' | 'email' | 'website' | 'description' | 'competitors' | 'start' | 'end' | 'creatorId' | 'creator' | 'problems' | 'isCreator' | 'updatedAt' | 'createdAt' | ContestKeySpecifier)[];
 export type ContestFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -394,6 +601,7 @@ export type ContestFieldPolicy = {
 	end?: FieldPolicy<any> | FieldReadFunction<any>,
 	creatorId?: FieldPolicy<any> | FieldReadFunction<any>,
 	creator?: FieldPolicy<any> | FieldReadFunction<any>,
+	problems?: FieldPolicy<any> | FieldReadFunction<any>,
 	isCreator?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>
@@ -407,9 +615,21 @@ export type UserFieldPolicy = {
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('createContest' | MutationKeySpecifier)[];
+export type ProblemKeySpecifier = ('id' | 'contestId' | 'rank' | 'type' | 'question' | 'points' | 'penalty' | ProblemKeySpecifier)[];
+export type ProblemFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	contestId?: FieldPolicy<any> | FieldReadFunction<any>,
+	rank?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>,
+	question?: FieldPolicy<any> | FieldReadFunction<any>,
+	points?: FieldPolicy<any> | FieldReadFunction<any>,
+	penalty?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MutationKeySpecifier = ('createContest' | 'createProblem' | 'updateProblem' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
-	createContest?: FieldPolicy<any> | FieldReadFunction<any>
+	createContest?: FieldPolicy<any> | FieldReadFunction<any>,
+	createProblem?: FieldPolicy<any> | FieldReadFunction<any>,
+	updateProblem?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type TypedTypePolicies = TypePolicies & {
 	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
@@ -427,6 +647,10 @@ export type TypedTypePolicies = TypePolicies & {
 	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
 		fields?: UserFieldPolicy,
+	},
+	Problem?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ProblemKeySpecifier | (() => undefined | ProblemKeySpecifier),
+		fields?: ProblemFieldPolicy,
 	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),

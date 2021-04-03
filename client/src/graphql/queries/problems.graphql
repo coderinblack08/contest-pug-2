@@ -1,0 +1,5 @@
+query FindProblems($contestId: String!) {
+  findProblems(contestId: $contestId) {
+    ...ProblemFragment
+  }
+}

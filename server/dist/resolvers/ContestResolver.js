@@ -22,13 +22,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContestResolver = void 0;
+const date_fns_1 = require("date-fns");
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-const date_fns_1 = require("date-fns");
 const Contest_1 = require("../entities/Contest");
+const Problem_1 = require("../entities/Problem");
 const isAuth_1 = require("../middlewares/isAuth");
 const ContestArgs_1 = require("../types/graphql/ContestArgs");
 const PaginationArgs_1 = require("../types/graphql/PaginationArgs");
+const ProblemArgs_1 = require("../types/graphql/ProblemArgs");
 let ContestResolver = class ContestResolver {
     createContest(args, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -75,6 +77,35 @@ let ContestResolver = class ContestResolver {
             return contest;
         });
     }
+    createProblem(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(args);
+            return Problem_1.Problem.create(args).save();
+        });
+    }
+    updateProblem(id, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield typeorm_1.getConnection()
+                .createQueryBuilder()
+                .update(Problem_1.Problem)
+                .set(args)
+                .where("id = :id", { id })
+                .returning("*")
+                .execute();
+            return result.raw[0];
+        });
+    }
+    findProblems(contestId, { req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield typeorm_1.getConnection().query(`
+      SELECT * FROM problem p
+      WHERE p."contestId" = $1 AND EXISTS (
+        SELECT * FROM contest c WHERE c.id = p."contestId" AND c."creatorId" = $2
+      )
+      ORDER BY p.rank;
+    `, [contestId, req.userId]);
+        });
+    }
 };
 __decorate([
     type_graphql_1.Mutation(() => Contest_1.Contest),
@@ -94,12 +125,38 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ContestResolver.prototype, "findContests", null);
 __decorate([
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     type_graphql_1.Query(() => Contest_1.Contest),
     __param(0, type_graphql_1.Arg("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ContestResolver.prototype, "getContest", null);
+__decorate([
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    type_graphql_1.Mutation(() => Problem_1.Problem),
+    __param(0, type_graphql_1.Arg("args", () => ProblemArgs_1.ProblemArgs)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [ProblemArgs_1.ProblemArgs]),
+    __metadata("design:returntype", Promise)
+], ContestResolver.prototype, "createProblem", null);
+__decorate([
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    type_graphql_1.Mutation(() => Problem_1.Problem),
+    __param(0, type_graphql_1.Arg("id", () => type_graphql_1.Int)),
+    __param(1, type_graphql_1.Arg("args", () => ProblemArgs_1.ProblemUpdateArgs)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, ProblemArgs_1.ProblemUpdateArgs]),
+    __metadata("design:returntype", Promise)
+], ContestResolver.prototype, "updateProblem", null);
+__decorate([
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    type_graphql_1.Query(() => [Problem_1.Problem]),
+    __param(0, type_graphql_1.Arg("contestId")), __param(1, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ContestResolver.prototype, "findProblems", null);
 ContestResolver = __decorate([
     type_graphql_1.Resolver(Contest_1.Contest)
 ], ContestResolver);

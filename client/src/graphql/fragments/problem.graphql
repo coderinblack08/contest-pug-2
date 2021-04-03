@@ -1,0 +1,9 @@
+fragment ProblemFragment on Problem {
+  id
+  contestId
+  rank
+  type
+  question
+  points
+  penalty
+}
